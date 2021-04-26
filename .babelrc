@@ -3,5 +3,14 @@
     "@babel/preset-typescript",
     "@babel/env",
     "@babel/react"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "extensions": [".js", ".jsx", ".ts", ".tsx"],
+      "alias": {
+        "@store": "./src/store",
+        "@styles": "./src/styles"
+      }
+    }]
   ]
 }

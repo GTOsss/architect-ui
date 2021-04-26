@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/index.tsx',
   mode: 'development',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -12,7 +13,23 @@ module.exports = {
         use: {
           loader: 'babel-loader',
         }
-      }
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          "style-loader",
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]_[local]_[hash:base64:5]',
+                auto: (resourcePath) => !resourcePath.endsWith('.module.scss'),
+              },
+            },
+          },
+          "sass-loader",
+        ],
+      },
     ],
   },
   output: {
@@ -20,7 +37,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: [ '.tsx', '.ts', '.js', '.jsx' ],
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
