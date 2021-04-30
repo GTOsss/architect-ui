@@ -25,6 +25,7 @@ module.exports = {
         ignore: tsPaths,
       },
     ],
+    '@typescript-eslint/lines-between-class-members': 'off',
     'no-param-reassign': 'off',
     'prefer-destructuring': 'off',
     'object-curly-newline': 'off',
