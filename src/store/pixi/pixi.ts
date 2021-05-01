@@ -84,7 +84,7 @@ class Entry extends Rect {
 
 const i = 0;
 
-const rects = new Array(600).fill(null).map((el, i) => {
+const rects = new Array(5000).fill(null).map((el, i) => {
   const rowCount = 60;
   const size = 64;
   const x = (i % rowCount) * size;
@@ -103,7 +103,6 @@ $pixi.watch((p) => {
 });
 
 const SCROLL_SENSITIVITY = 0.25;
-const break2 = false;
 
 sample({
   source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY, cursorPosition: $cursorPosition, zoom: $zoom },
@@ -131,34 +130,11 @@ sample({
   //   // pixi.stage.y += Math.ceil(Math.max((scrollY * -1 - pixi.stage.y) * delta * SCROLL_SENSITIVITY, 1));
   // }
 
-  const cursorX = cursorPosition.x / window.innerWidth;
-  const cursorY = cursorPosition.y / window.innerHeight;
-
   const prevZoom = pixi.stage.scale.x;
 
-  if (zoom > pixi.stage.scale.x) {
-    // var worldPos = {x: (x - stage.x) / stage.scale.x, y: (y - stage.y)/stage.scale.y};
-    // var newScale = {x: stage.scale.x + s, y: stage.scale.y + s};
-    //
-    // var newScreenPos = {x: (worldPos.x ) * newScale.x + stage.x, y: (worldPos.y) * newScale.y + stage.y};
-    //
-    // stage.x -= (newScreenPos.x-x) ;
-    // stage.y -= (newScreenPos.y-y) ;
-    // stage.scale.x = newScale.x;
-    // stage.scale.y = newScale.y;
-
-    // const worldPos = { x: (cursorX - pixi.stage.x) / prevZoom, y: (cursorY - pixi.stage.y) / prevZoom };
-    // const newScale = { x: zoom, y: zoom };
-    //
-    // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
-    //
-    // pixi.stage.x -= newScreenPos.x - cursorX;
-    // pixi.stage.y -= newScreenPos.y - cursorY;
-    // pixi.stage.scale.x = newScale.x;
-    // pixi.stage.scale.y = newScale.y;
-
-    // pixi.stage.scale.x += (zoom - pixi.stage.scale.x) * delta * 0.2;
-    // pixi.stage.scale.y += (zoom - pixi.stage.scale.y) * delta * 0.2;
+  if (zoom !== prevZoom) {
+    const cursorX = cursorPosition.x / window.innerWidth;
+    const cursorY = cursorPosition.y / window.innerHeight;
 
     // заскеленные размеры экрана
     const w = window.innerWidth * zoom;
@@ -169,53 +145,76 @@ sample({
 
     pixi.stage.scale.x = zoom;
     pixi.stage.scale.y = zoom;
-
-    // console.log('Вся нужная штука:', {
-    //   scale: zoom,
-    //   w: window.innerWidth,
-    //   stageX: pixi.stage.x,
-    //   moved: formula,
-    //   cursorX,
-    //   cursorXKoef: cursorPosition.x,
-    // });
-
-    // console.log({
-    //   cursorX,
-    //   zoom,
-    //   screenWidth: window.innerWidth,
-    //   scale: pixi.stage.scale.x,
-    //   pixiSageX: pixi.stage.x,
-    //   moved: (cursorX / zoom) * window.innerWidth,
-    // });
-    // pixi.stage.x = (x - pixi.stage.x) / pixi.stage.scale.x;
-    // pixi.stage.y = (y - pixi.stage.y) / pixi.stage.scale.y;
-    // const worldPos = { x: (x - pixi.stage.x) / pixi.stage.scale.x, y: (y - pixi.stage.y) / pixi.stage.scale.y };
-    // const newScale = { x: pixi.stage.scale.x + zoom, y: pixi.stage.scale.y + zoom };
-    // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
-    // pixi.stage.x = newScreenPos.x;
-    // pixi.stage.y = newScreenPos.y;
-    console.log(cursorX);
-  } else if (zoom < pixi.stage.scale.x) {
-    // pixi.stage.scale.x -= (pixi.stage.scale.x - zoom) * delta * 0.2;
-    // pixi.stage.scale.y -= (pixi.stage.scale.y - zoom) * delta * 0.2;
-    // pixi.stage.x += (window.innerWidth - window.innerWidth / zoom) * cursorX;
-    // pixi.stage.y += (window.innerHeight - window.innerHeight / zoom) * cursorY;
-
-    const w = window.innerWidth * zoom;
-    const h = window.innerHeight * zoom;
-
-    pixi.stage.x -= (w - w / (zoom / prevZoom)) * cursorX;
-    pixi.stage.y -= (h - h / (zoom / prevZoom)) * cursorY;
-
-    pixi.stage.scale.x = zoom;
-    pixi.stage.scale.y = zoom;
-
-    console.log(cursorX);
-
-    // pixi.stage.scale.x = zoom;
-    // pixi.stage.scale.y = zoom;
   }
 
+  // if (zoom > pixi.stage.scale.x) {
+  //   // var worldPos = {x: (x - stage.x) / stage.scale.x, y: (y - stage.y)/stage.scale.y};
+  //   // var newScale = {x: stage.scale.x + s, y: stage.scale.y + s};
+  //   //
+  //   // var newScreenPos = {x: (worldPos.x ) * newScale.x + stage.x, y: (worldPos.y) * newScale.y + stage.y};
+  //   //
+  //   // stage.x -= (newScreenPos.x-x) ;
+  //   // stage.y -= (newScreenPos.y-y) ;
+  //   // stage.scale.x = newScale.x;
+  //   // stage.scale.y = newScale.y;
+  //
+  //   // const worldPos = { x: (cursorX - pixi.stage.x) / prevZoom, y: (cursorY - pixi.stage.y) / prevZoom };
+  //   // const newScale = { x: zoom, y: zoom };
+  //   //
+  //   // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
+  //   //
+  //   // pixi.stage.x -= newScreenPos.x - cursorX;
+  //   // pixi.stage.y -= newScreenPos.y - cursorY;
+  //   // pixi.stage.scale.x = newScale.x;
+  //   // pixi.stage.scale.y = newScale.y;
+  //
+  //   // pixi.stage.scale.x += (zoom - pixi.stage.scale.x) * delta * 0.2;
+  //   // pixi.stage.scale.y += (zoom - pixi.stage.scale.y) * delta * 0.2;
+  //
+  //
+  //
+  //   // console.log('Вся нужная штука:', {
+  //   //   scale: zoom,
+  //   //   w: window.innerWidth,
+  //   //   stageX: pixi.stage.x,
+  //   //   moved: formula,
+  //   //   cursorX,
+  //   //   cursorXKoef: cursorPosition.x,
+  //   // });
+  //
+  //   // console.log({
+  //   //   cursorX,
+  //   //   zoom,
+  //   //   screenWidth: window.innerWidth,
+  //   //   scale: pixi.stage.scale.x,
+  //   //   pixiSageX: pixi.stage.x,
+  //   //   moved: (cursorX / zoom) * window.innerWidth,
+  //   // });
+  //   // pixi.stage.x = (x - pixi.stage.x) / pixi.stage.scale.x;
+  //   // pixi.stage.y = (y - pixi.stage.y) / pixi.stage.scale.y;
+  //   // const worldPos = { x: (x - pixi.stage.x) / pixi.stage.scale.x, y: (y - pixi.stage.y) / pixi.stage.scale.y };
+  //   // const newScale = { x: pixi.stage.scale.x + zoom, y: pixi.stage.scale.y + zoom };
+  //   // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
+  //   // pixi.stage.x = newScreenPos.x;
+  //   // pixi.stage.y = newScreenPos.y;
+  //   console.log(cursorX);
+  // } else if (zoom < pixi.stage.scale.x) {
+  //   // pixi.stage.scale.x -= (pixi.stage.scale.x - zoom) * delta * 0.2;
+  //   // pixi.stage.scale.y -= (pixi.stage.scale.y - zoom) * delta * 0.2;
+  //   // pixi.stage.x += (window.innerWidth - window.innerWidth / zoom) * cursorX;
+  //   // pixi.stage.y += (window.innerHeight - window.innerHeight / zoom) * cursorY;
+  //
+  //   pixi.stage.x -= (w - w / (zoom / prevZoom)) * cursorX;
+  //   pixi.stage.y -= (h - h / (zoom / prevZoom)) * cursorY;
+  //
+  //   pixi.stage.scale.x = zoom;
+  //   pixi.stage.scale.y = zoom;
+  //
+  //   console.log(cursorX);
+  //
+  //   // pixi.stage.scale.x = zoom;
+  //   // pixi.stage.scale.y = zoom;
+  // }
 });
 
 // sample({
