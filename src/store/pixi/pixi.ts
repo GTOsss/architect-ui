@@ -86,7 +86,7 @@ const i = 0;
 
 const rects = new Array(5000).fill(null).map((el, i) => {
   const rowCount = 60;
-  const size = 64;
+  const size = 100;
   const x = (i % rowCount) * size;
   const y = Math.floor(i / rowCount) * size;
   return new Entry({ x, y, w: size, h: size, title: `${i % rowCount} : ${Math.floor(i / rowCount)}` });
@@ -94,6 +94,8 @@ const rects = new Array(5000).fill(null).map((el, i) => {
 
 $pixi.watch((p) => {
   if (!p) return null;
+
+  p.stage.x = -0;
 
   p.ticker.add(tick);
 
@@ -133,6 +135,18 @@ sample({
   const prevZoom = pixi.stage.scale.x;
 
   if (zoom !== prevZoom) {
+    // =======================
+    // ФОРМУЛА 1
+    // global mouse position - local mouse position * (1 - (zoom - prevZoom))
+    // const globalXMousePos = pixi.stage.x + -cursorPosition.x;
+    // const globalYMousePos = pixi.stage.y + -cursorPosition.y;
+    //
+    // pixi.stage.x = globalXMousePos + cursorPosition.x * (1 - (zoom - prevZoom));
+    // pixi.stage.y = globalYMousePos + cursorPosition.y * (1 - (zoom - prevZoom));
+    // =======================
+
+    // =======================
+    // ФОРМУЛА 2
     const cursorX = cursorPosition.x / window.innerWidth;
     const cursorY = cursorPosition.y / window.innerHeight;
 
@@ -142,6 +156,7 @@ sample({
 
     pixi.stage.x -= (w - w / (zoom / prevZoom)) * cursorX;
     pixi.stage.y -= (h - h / (zoom / prevZoom)) * cursorY;
+    // =======================
 
     pixi.stage.scale.x = zoom;
     pixi.stage.scale.y = zoom;
