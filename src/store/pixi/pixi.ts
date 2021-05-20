@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { createEvent, createStore, restore, sample } from '@store/rootDomain';
 import { $zoom } from '@store/pixi/zoom';
+import { combine } from 'effector';
 import { $cursorPosition } from './cursorPosition';
 import { $scrollX, $scrollY } from './scrollPosition';
 
@@ -104,202 +105,105 @@ $pixi.watch((p) => {
   });
 });
 
-const SCROLL_SENSITIVITY = 0.25;
+const WHEEL_ANIMATION_SPEED = 0.5;
 
 sample({
-  source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY, cursorPosition: $cursorPosition, zoom: $zoom },
+  source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY },
   clock: tick,
-  fn: ({ pixi, scrollX, scrollY, cursorPosition, zoom }, delta) => ({
+  fn: ({ pixi, scrollX, scrollY }, delta) => ({
     pixi,
     scrollX,
     scrollY,
     delta,
-    cursorPosition,
-    zoom,
   }),
-}).watch(({ scrollX, scrollY, pixi, delta, cursorPosition, zoom }) => {
-  // if (pixi.stage.x > scrollX * -1) {
-  //   pixi.stage.x -= scrollX * -1;
-  //   // pixi.stage.x -= Math.ceil(Math.max((pixi.stage.x - scrollX * -1) * delta * SCROLL_SENSITIVITY, 1));
-  // } else if (pixi.stage.x < scrollX * -1) {
-  //   // pixi.stage.x += Math.ceil(Math.max((scrollX * -1 - pixi.stage.x) * delta * SCROLL_SENSITIVITY, 1));
-  // }
-  //
-  // if (pixi.stage.y > scrollY * -1) {
-  //   pixi.stage.y -= scrollY * -1;
-  //   // pixi.stage.y -= Math.ceil(Math.max((pixi.stage.y - scrollY * -1) * delta * SCROLL_SENSITIVITY, 1));
-  // } else if (pixi.stage.y < scrollY * -1) {
-  //   // pixi.stage.y += Math.ceil(Math.max((scrollY * -1 - pixi.stage.y) * delta * SCROLL_SENSITIVITY, 1));
-  // }
-
-  const prevZoom = pixi.stage.scale.x;
-
-  if (zoom !== prevZoom) {
-    // =======================
-    // ФОРМУЛА 1
-    // global mouse position - local mouse position * (1 - (zoom - prevZoom))
-    // const globalXMousePos = pixi.stage.x + -cursorPosition.x;
-    // const globalYMousePos = pixi.stage.y + -cursorPosition.y;
-    //
-    // pixi.stage.x = globalXMousePos + cursorPosition.x * (1 - (zoom - prevZoom));
-    // pixi.stage.y = globalYMousePos + cursorPosition.y * (1 - (zoom - prevZoom));
-    // =======================
-
-    // =======================
-    // ФОРМУЛА 2
-    const cursorX = cursorPosition.x / window.innerWidth;
-    const cursorY = cursorPosition.y / window.innerHeight;
-
-    // заскеленные размеры экрана
-    const w = window.innerWidth * zoom;
-    const h = window.innerHeight * zoom;
-
-    pixi.stage.x -= (w - w / (zoom / prevZoom)) * cursorX;
-    pixi.stage.y -= (h - h / (zoom / prevZoom)) * cursorY;
-    // =======================
-
-    pixi.stage.scale.x = zoom;
-    pixi.stage.scale.y = zoom;
+}).watch(({ scrollX, scrollY, pixi, delta }) => {
+  if (pixi.stage.x > scrollX * -1) {
+    pixi.stage.x -= Math.ceil(Math.max((pixi.stage.x - scrollX * -1) * delta * WHEEL_ANIMATION_SPEED, 1));
+  } else if (pixi.stage.x < scrollX * -1) {
+    pixi.stage.x += Math.ceil(Math.max((scrollX * -1 - pixi.stage.x) * delta * WHEEL_ANIMATION_SPEED, 1));
   }
 
-  // if (zoom > pixi.stage.scale.x) {
-  //   // var worldPos = {x: (x - stage.x) / stage.scale.x, y: (y - stage.y)/stage.scale.y};
-  //   // var newScale = {x: stage.scale.x + s, y: stage.scale.y + s};
-  //   //
-  //   // var newScreenPos = {x: (worldPos.x ) * newScale.x + stage.x, y: (worldPos.y) * newScale.y + stage.y};
-  //   //
-  //   // stage.x -= (newScreenPos.x-x) ;
-  //   // stage.y -= (newScreenPos.y-y) ;
-  //   // stage.scale.x = newScale.x;
-  //   // stage.scale.y = newScale.y;
-  //
-  //   // const worldPos = { x: (cursorX - pixi.stage.x) / prevZoom, y: (cursorY - pixi.stage.y) / prevZoom };
-  //   // const newScale = { x: zoom, y: zoom };
-  //   //
-  //   // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
-  //   //
-  //   // pixi.stage.x -= newScreenPos.x - cursorX;
-  //   // pixi.stage.y -= newScreenPos.y - cursorY;
-  //   // pixi.stage.scale.x = newScale.x;
-  //   // pixi.stage.scale.y = newScale.y;
-  //
-  //   // pixi.stage.scale.x += (zoom - pixi.stage.scale.x) * delta * 0.2;
-  //   // pixi.stage.scale.y += (zoom - pixi.stage.scale.y) * delta * 0.2;
-  //
-  //
-  //
-  //   // console.log('Вся нужная штука:', {
-  //   //   scale: zoom,
-  //   //   w: window.innerWidth,
-  //   //   stageX: pixi.stage.x,
-  //   //   moved: formula,
-  //   //   cursorX,
-  //   //   cursorXKoef: cursorPosition.x,
-  //   // });
-  //
-  //   // console.log({
-  //   //   cursorX,
-  //   //   zoom,
-  //   //   screenWidth: window.innerWidth,
-  //   //   scale: pixi.stage.scale.x,
-  //   //   pixiSageX: pixi.stage.x,
-  //   //   moved: (cursorX / zoom) * window.innerWidth,
-  //   // });
-  //   // pixi.stage.x = (x - pixi.stage.x) / pixi.stage.scale.x;
-  //   // pixi.stage.y = (y - pixi.stage.y) / pixi.stage.scale.y;
-  //   // const worldPos = { x: (x - pixi.stage.x) / pixi.stage.scale.x, y: (y - pixi.stage.y) / pixi.stage.scale.y };
-  //   // const newScale = { x: pixi.stage.scale.x + zoom, y: pixi.stage.scale.y + zoom };
-  //   // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
-  //   // pixi.stage.x = newScreenPos.x;
-  //   // pixi.stage.y = newScreenPos.y;
-  //   console.log(cursorX);
-  // } else if (zoom < pixi.stage.scale.x) {
-  //   // pixi.stage.scale.x -= (pixi.stage.scale.x - zoom) * delta * 0.2;
-  //   // pixi.stage.scale.y -= (pixi.stage.scale.y - zoom) * delta * 0.2;
-  //   // pixi.stage.x += (window.innerWidth - window.innerWidth / zoom) * cursorX;
-  //   // pixi.stage.y += (window.innerHeight - window.innerHeight / zoom) * cursorY;
-  //
-  //   pixi.stage.x -= (w - w / (zoom / prevZoom)) * cursorX;
-  //   pixi.stage.y -= (h - h / (zoom / prevZoom)) * cursorY;
-  //
-  //   pixi.stage.scale.x = zoom;
-  //   pixi.stage.scale.y = zoom;
-  //
-  //   console.log(cursorX);
-  //
-  //   // pixi.stage.scale.x = zoom;
-  //   // pixi.stage.scale.y = zoom;
-  // }
+  if (pixi.stage.y > scrollY * -1) {
+    pixi.stage.y -= Math.ceil(Math.max((pixi.stage.y - scrollY * -1) * delta * WHEEL_ANIMATION_SPEED, 1));
+  } else if (pixi.stage.y < scrollY * -1) {
+    pixi.stage.y += Math.ceil(Math.max((scrollY * -1 - pixi.stage.y) * delta * WHEEL_ANIMATION_SPEED, 1));
+  }
 });
 
-// sample({
-//   source: { pixi: $pixi, scrollY: $scrollY },
-//   clock: tick,
-//   fn: ({ pixi, scrollY }, delta) => ({ pixi, scrollY, delta }),
-// }).watch(({ scrollY, pixi, delta }) => {
-//   if (pixi.stage.y > scrollY * -1) {
-//     pixi.stage.y -= Math.ceil(Math.max((pixi.stage.y - scrollY * -1) * delta * SCROLL_SENSITIVITY, 1));
-//   } else if (pixi.stage.y < scrollY * -1) {
-//     pixi.stage.y += Math.ceil(Math.max((scrollY * -1 - pixi.stage.y) * delta * SCROLL_SENSITIVITY, 1));
-//   }
-// });
+const calcZoom = ({ cursorPosition, stagePosition, stageScale, zoom }) => {
+  const worldPos = (cursorPosition - stagePosition) / stageScale;
+  const newScreenPos = worldPos * zoom + stagePosition;
+  return Math.round((stagePosition - (newScreenPos - cursorPosition)) * -1);
+};
 
 sample({
-  source: { pixi: $pixi, zoom: $zoom, cursorPosition: $cursorPosition },
+  source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY, cursorPosition: $cursorPosition, zoom: $zoom },
+  clock: combine({ $zoom }),
+  fn: ({ pixi, cursorPosition, zoom }) =>
+    calcZoom({
+      cursorPosition: cursorPosition.x,
+      stagePosition: pixi.stage.x,
+      stageScale: pixi.stage.scale.x,
+      zoom,
+    }),
+  target: $scrollX,
+});
+
+sample({
+  source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY, cursorPosition: $cursorPosition, zoom: $zoom },
+  clock: combine({ $zoom }),
+  fn: ({ pixi, cursorPosition, zoom }) =>
+    calcZoom({
+      cursorPosition: cursorPosition.y,
+      stagePosition: pixi.stage.y,
+      stageScale: pixi.stage.scale.y,
+      zoom,
+    }),
+  target: $scrollY,
+});
+
+sample({
+  source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY, cursorPosition: $cursorPosition, zoom: $zoom },
+  // clock: combine({ $zoom }),
   clock: tick,
-  fn: ({ pixi, zoom, cursorPosition }, delta) => ({ pixi, zoom, delta, cursorPosition }),
-}).watch(({ pixi, zoom, delta, cursorPosition: { x, y } }) => {
-  // zoom.scale.y;
+  fn: ({ pixi, zoom }, delta) => ({ pixi, zoom, delta }),
+}).watch(({ pixi, zoom, delta }) => {
+  const diff = Math.abs(zoom - pixi.stage.scale.x);
 
-  // console.log(delta);
-
-  // pixi.render();
-
-  // const diff = window.innerWidth / pixi.stage.scale.x;
-  // console.log(diff);
-  // pixi.stage.x = pixi.stage.x + x - diff;
-
-  if (zoom > pixi.stage.scale.x) {
-    // pixi.stage.scale.x += (zoom - pixi.stage.scale.x) * delta * 0.2;
-    // pixi.stage.scale.y += (zoom - pixi.stage.scale.y) * delta * 0.2;
-    // const cursorX = x / window.innerWidth;
-    // const cursorY = y / window.innerHeight;
-    // pixi.stage.x -= (cursorX / zoom) * window.innerWidth;
-    // pixi.stage.y -= (cursorY / zoom) * window.innerHeight;
-    // console.log({
-    //   cursorX,
-    //   zoom,
-    //   screenWidth: window.innerWidth,
-    //   scale: pixi.stage.scale.x,
-    //   pixiSageX: pixi.stage.x,
-    //   moved: (cursorX / zoom) * window.innerWidth,
-    // });
-    // pixi.stage.x = (x - pixi.stage.x) / pixi.stage.scale.x;
-    // pixi.stage.y = (y - pixi.stage.y) / pixi.stage.scale.y;
-    // const worldPos = { x: (x - pixi.stage.x) / pixi.stage.scale.x, y: (y - pixi.stage.y) / pixi.stage.scale.y };
-    // const newScale = { x: pixi.stage.scale.x + zoom, y: pixi.stage.scale.y + zoom };
-    // const newScreenPos = { x: worldPos.x * newScale.x + pixi.stage.x, y: worldPos.y * newScale.y + pixi.stage.y };
-    // pixi.stage.x = newScreenPos.x;
-    // pixi.stage.y = newScreenPos.y;
-  } else if (zoom < pixi.stage.scale.x) {
-    pixi.stage.scale.x -= (pixi.stage.scale.x - zoom) * delta * 0.2;
-    pixi.stage.scale.y -= (pixi.stage.scale.y - zoom) * delta * 0.2;
-  }
-
-  if (zoom > pixi.stage.scale.x) {
-    // const { stage } = pixi;
-    // const s = zoom;
-    // const worldPos = { x: (x - stage.x) / stage.scale.x, y: (y - stage.y) / stage.scale.y };
-    // const newScale = { x: stage.scale.x + s, y: stage.scale.y + s };
-    //
-    // const newScreenPos = { x: worldPos.x * newScale.x + stage.x, y: worldPos.y * newScale.y + stage.y };
-    //
-    // stage.x -= newScreenPos.x - x;
-    // stage.y -= newScreenPos.y - y;
-    // stage.scale.x = newScale.x;
-    // stage.scale.y = newScale.y;
-  } else if (zoom < pixi.stage.scale.x) {
-    // pixi.stage.scale.x -= (pixi.stage.scale.x - zoom) * delta * 0.2;
-    // pixi.stage.scale.y -= (pixi.stage.scale.y - zoom) * delta * 0.2;
+  if (pixi.stage.scale.x < zoom) {
+    const result = pixi.stage.scale.x + diff * delta * WHEEL_ANIMATION_SPEED;
+    // result = Math.round()
+    pixi.stage.scale.x = result;
+    pixi.stage.scale.y = result;
+  } else if (pixi.stage.scale.x > zoom) {
+    const result = pixi.stage.scale.x - diff * delta * WHEEL_ANIMATION_SPEED;
+    pixi.stage.scale.x = result;
+    pixi.stage.scale.y = result;
   }
 });
+
+// dev tools:
+// add to jsx: <span style={{ position: 'fixed', right: 0, bottom: 0, backgroundColor: 'white' }} id="debug" />
+//
+// const $allState = combine({
+//   pixi: $pixi,
+//   scrollX: $scrollX,
+//   scrollY: $scrollY,
+//   cursorPosition: $cursorPosition,
+//   zoom: $zoom,
+// });
+//
+// tick.watch(() => {
+//   const { pixi, cursorPosition, zoom, scrollX, scrollY } = $allState.getState();
+//
+//   window.pixi = pixi;
+//   const debug = document.getElementById('debug');
+//   if (!debug) return;
+//   debug.innerText = JSON.stringify({
+//     pixi: { x: pixi.stage.x, y: pixi.stage.y, scale: pixi.stage.scale.x },
+//     cursorPosition,
+//     scroll: { scrollX, scrollY },
+//     zoom,
+//   });
+// });
+//

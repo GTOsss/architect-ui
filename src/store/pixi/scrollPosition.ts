@@ -1,5 +1,7 @@
 import { createEvent, createStore, restore, sample } from '@store/rootDomain';
 
+const SCROLL_STEP = 80;
+
 export const onWheel = createEvent<WheelEvent>();
 
 onWheel.watch((e) => {
@@ -8,15 +10,13 @@ onWheel.watch((e) => {
 
 export const setScrollX = createEvent<number>();
 export const $scrollX = restore(setScrollX, 0);
-export const $scrollMinX = createStore(0);
-export const $scrollMaxX = createStore(5000);
+export const $scrollMinX = createStore(-50000);
+export const $scrollMaxX = createStore(50000);
 
 export const setScrollY = createEvent<number>();
 export const $scrollY = restore(setScrollY, 0);
-export const $scrollMinY = createStore(0);
-export const $scrollMaxY = createStore(5000);
-
-const SCROLL_STEP = 80;
+export const $scrollMinY = createStore(-50000);
+export const $scrollMaxY = createStore(50000);
 
 sample({
   source: { scrollX: $scrollX, scrollMaxX: $scrollMaxX, scrollMinX: $scrollMinX },
@@ -34,13 +34,6 @@ sample({
   },
   target: $scrollX,
 });
-
-// sample({
-//   source: { scrollX: $scrollX, scrollMinX: $scrollMinX },
-//   clock: onWheel.filter({ fn: (e) => !e.ctrlKey && e.shiftKey && e.deltaY < 0 }),
-//   fn: ({ scrollX, scrollMinX }) => Math.max(scrollMinX, scrollX - SCROLL_STEP),
-//   target: $scrollX,
-// });
 
 sample({
   source: { scrollY: $scrollY, scrollMaxY: $scrollMaxY },
