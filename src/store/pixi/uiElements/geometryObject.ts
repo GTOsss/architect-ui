@@ -3,6 +3,7 @@ export interface IGeometryObject {
   y?: number;
   w?: number;
   h?: number;
+  bottom?: number;
   paddingRight?: number;
   paddingLeft?: number;
   paddingBottom?: number;
@@ -16,6 +17,7 @@ export class GeometryObject {
   _y: number;
   _w: number;
   _h: number;
+  bottom: number;
   paddingRight: number;
   paddingLeft: number;
   paddingBottom: number;
@@ -28,6 +30,7 @@ export class GeometryObject {
     y = null,
     w = null,
     h = null,
+    bottom = null,
     paddingRight = 0,
     paddingLeft = 0,
     paddingBottom = 0,
@@ -45,5 +48,6 @@ export class GeometryObject {
     this.paddingTop = paddingTop;
     this.bgColor = bgColor;
     this.borderRadius = borderRadius;
+    this.bottom = bottom;
   }
 }

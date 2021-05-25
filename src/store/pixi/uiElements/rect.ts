@@ -3,7 +3,7 @@ import { Text } from './text';
 import { GeometryObject, IGeometryObject } from './geometryObject';
 
 export interface IRect extends IGeometryObject {
-  pixi: PIXI.Application;
+  pixi?: PIXI.Application;
   children?: (Rect | Text)[];
 }
 
@@ -64,11 +64,16 @@ export class Rect extends GeometryObject {
   }
 
   get y() {
+    if (this.bottom !== null) {
+      return this.parent?.y + this.parent?.h - this.h - this.bottom;
+    }
+
     if (this._y === null) {
       return this.parent?.y + this.parent?.paddingTop;
     }
 
-    return this._y;
+    const parentY = this.parent?.y || 0; // relative
+    return parentY + this._y;
   }
 
   set y(value) {
@@ -84,15 +89,18 @@ export class Rect extends GeometryObject {
   }
 
   set w(value) {
-    this._w = value;
+    this._w = value + this.paddingLeft + this.paddingRight;
   }
 
   get h() {
     if (this._h === null) {
-      return this.children.reduce((acc, el) => acc + el.h, 0) + this.paddingTop + this.paddingBottom;
+      return this.children.reduce((acc, el) => {
+        const childHeight = (el as Rect).h || (el as Text)._style?.fontSize || 0;
+        return acc + childHeight + this.paddingTop + this.paddingBottom;
+      }, 0);
     }
 
-    return this._h;
+    return this._h + this.paddingTop + this.paddingBottom;
   }
 
   set h(value) {

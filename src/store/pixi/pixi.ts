@@ -59,25 +59,39 @@ $pixi.watch((pixi) => {
 
   pixi.ticker.add(tick);
 
-  const entryWidth = 142;
-  const margin = 10;
-
   Object.entries(sourceMap).forEach(([name, components], i) => {
-    const x = i * (entryWidth + margin * 2) + 50;
-    const y = 50;
-    const w = entryWidth;
+    const rectComponents = components.map((_, i) => {
+      return new Rect({
+        bgColor: 0x76808e,
+        y: 60 * i + 30,
+        h: 50,
+        borderRadius: 5,
+        children: [new Text({ text: `test ${i}`, style: { fill: 'black', fontSize: 14 } })],
+      });
+    });
 
     const rect = new Rect({
       pixi,
-      x: 10,
+      x: i * 210 + i * 20 + 10,
       y: 10,
       w: 200,
-      h: 250,
+      paddingTop: 12,
       paddingLeft: 10,
       paddingRight: 10,
       bgColor: 0x21262e,
       borderRadius: 10,
-      children: [new Text({ text: name, style: { fill: 0xffffff, fontSize: 14 }, y: 10 })],
+      children: [
+        new Text({ text: name, style: { fill: 'white', fontSize: 14 }, y: 6, align: 'center' }),
+        ...rectComponents,
+        new Rect({
+          bgColor: 0xa7b7cd,
+          bottom: 10,
+          w: 100,
+          h: 26,
+          borderRadius: 5,
+          children: [new Text({ text: 'add item', style: { fill: 'black', fontSize: 12 }, y: 4, align: 'center' })],
+        }),
+      ],
     });
 
     // const text = new Text({ pixi, text: name, style: { fill: 'black', fontSize: 14 }, x: 0, y: 0 });
@@ -94,7 +108,7 @@ $pixi.watch((pixi) => {
   });
 });
 
-const WHEEL_ANIMATION_SPEED = 0.5;
+const WHEEL_ANIMATION_SPEED = 0.4;
 
 sample({
   source: { pixi: $pixi, scrollX: $scrollX, scrollY: $scrollY },

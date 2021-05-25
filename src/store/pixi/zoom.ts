@@ -1,8 +1,8 @@
 import { createEvent, restore, sample } from '@store/rootDomain';
 import { onWheel } from './scrollPosition';
 
-const ZOOM_MIN = 0.25;
-const ZOOM_MAX = 3;
+const ZOOM_MIN = 0.12;
+const ZOOM_MAX = 1;
 
 export const setZoom = createEvent<number>();
 export const $zoom = restore(setZoom, 1);
