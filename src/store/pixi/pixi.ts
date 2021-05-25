@@ -4,6 +4,7 @@ import { $zoom } from '@store/pixi/zoom';
 import { combine } from 'effector';
 import { $cursorPosition } from './cursorPosition';
 import { $scrollX, $scrollY } from './scrollPosition';
+import { Rect, Text } from './uiElements';
 
 export const setPixiRoot = createEvent<HTMLDivElement>();
 
@@ -14,6 +15,7 @@ export const $pixi = createStore(
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: 0xffffff,
+    antialias: true,
   }),
 );
 
@@ -27,81 +29,68 @@ export const tick = createEvent<number>();
 
 /// tests
 
-class Rect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  paddingRight: number;
-  paddingLeft: number;
-  paddingBottom: number;
-  paddingTop: number;
-  rect: PIXI.Graphics;
+const sourceMap = {
+  stadiums: [
+    'page',
+    ['component', { rPath: '/pages' }],
+    ['component', { rPath: '/pages/stadiums', name: 'stadiumItem' }],
+    'store',
+  ],
+  stadium: [
+    //
+    ['page', { rPath: '/stadiums', name: '[code]' }],
+    ['component', { rPath: '/pages' }],
+    'store',
+  ],
+};
 
-  constructor({ x, y, w, h, paddingRight = 10, paddingLeft = 10, paddingBottom = 10, paddingTop = 10 }) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.paddingLeft = paddingLeft;
-    this.paddingRight = paddingRight;
-    this.paddingBottom = paddingBottom;
-    this.paddingTop = paddingTop;
-    this.rect = new PIXI.Graphics();
-  }
+// const rects = new Array(5000).fill(null).map((el, i) => {
+//   const rowCount = 60;
+//   const size = 100;
+//   const x = (i % rowCount) * size;
+//   const y = Math.floor(i / rowCount) * size;
+//   return new Entry({ x, y, w: size, h: size, title: `${i % rowCount} : ${Math.floor(i / rowCount)}` });
+// });
 
-  render(pixi: PIXI.Application) {
-    this.rect.lineStyle(0, 0x333333);
-    this.rect.beginFill(
-      `0x${[
-        parseInt(Math.floor(Math.random() * 255), 16),
-        parseInt(Math.floor(Math.random() * 255), 16),
-        parseInt(Math.floor(Math.random() * 255), 16),
-      ].join('')}`,
-    );
-    this.rect.drawRect(this.x, this.y, this.w, this.h);
-    this.rect.endFill();
-    pixi.stage.addChild(this.rect);
-  }
-}
+$pixi.watch((pixi) => {
+  if (!pixi) return null;
 
-class Entry extends Rect {
-  title: PIXI.Text;
+  pixi.stage.x = -0;
 
-  constructor({ x, y, w, h, paddingRight = 10, paddingLeft = 10, paddingBottom = 10, paddingTop = 10, title }) {
-    super({ x, y, w, h, paddingRight, paddingLeft, paddingBottom, paddingTop });
-    this.title = new PIXI.Text(title, { fontSize: 60 });
-    this.title.x = x + paddingLeft;
-    this.title.y = y + paddingTop;
-    this.title.scale.x = 0.25;
-    this.title.scale.y = 0.25;
-  }
+  pixi.ticker.add(tick);
 
-  render(pixi: PIXI.Application) {
-    super.render(pixi);
-    pixi.stage.addChild(this.title);
-  }
-}
+  const entryWidth = 142;
+  const margin = 10;
 
-const i = 0;
+  Object.entries(sourceMap).forEach(([name, components], i) => {
+    const x = i * (entryWidth + margin * 2) + 50;
+    const y = 50;
+    const w = entryWidth;
 
-const rects = new Array(5000).fill(null).map((el, i) => {
-  const rowCount = 60;
-  const size = 100;
-  const x = (i % rowCount) * size;
-  const y = Math.floor(i / rowCount) * size;
-  return new Entry({ x, y, w: size, h: size, title: `${i % rowCount} : ${Math.floor(i / rowCount)}` });
-});
+    const rect = new Rect({
+      pixi,
+      x: 10,
+      y: 10,
+      w: 200,
+      h: 250,
+      paddingLeft: 10,
+      paddingRight: 10,
+      bgColor: 0x21262e,
+      borderRadius: 10,
+      children: [new Text({ text: name, style: { fill: 0xffffff, fontSize: 14 }, y: 10 })],
+    });
 
-$pixi.watch((p) => {
-  if (!p) return null;
+    // const text = new Text({ pixi, text: name, style: { fill: 'black', fontSize: 14 }, x: 0, y: 0 });
+    // text.render();
 
-  p.stage.x = -0;
+    window.r = rect;
+    rect.render();
 
-  p.ticker.add(tick);
-
-  rects.forEach((el) => {
-    el.render(p);
+    // const children = components.map((el) => {
+    //   const component = new Component({ pixi: p, x, y, w, name });
+    //   return component;
+    // });
+    // const entry = new Entry({ pixi: p, x, y: 50, w: entryWidth, title: name, children });
   });
 });
 

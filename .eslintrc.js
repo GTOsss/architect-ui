@@ -49,5 +49,6 @@ module.exports = {
     'import/no-named-as-default': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
+    'no-underscore-dangle': 'off',
   },
 };
