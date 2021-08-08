@@ -63,25 +63,30 @@ $pixi.watch((pixi) => {
     const rectComponents = components.map((_, i) => {
       return new Rect({
         bgColor: 0x76808e,
-        y: 60 * i + 30,
-        h: 50,
-        borderRadius: 5,
-        children: [new Text({ text: `test ${i}`, style: { fill: 'black', fontSize: 14 } })],
+        children: [
+          new Rect({
+            h: 20,
+            bgColor: 0x8b9aae,
+            children: [new Text({ text: `name`, style: { fill: 'black', fontSize: 12 }, id: 1 })],
+          }),
+          new Text({ text: `test ${i}`, style: { fill: 'black', fontSize: 18 }, id: 1 }),
+          new Rect({ h: 20, bgColor: 0x8b9aae }),
+        ],
       });
     });
 
     const rect = new Rect({
       pixi,
-      x: i * 210 + i * 20 + 10,
+      x: i * 250 + i * 20 + 10,
       y: 10,
-      w: 200,
+      w: 260,
       paddingTop: 12,
       paddingLeft: 10,
       paddingRight: 10,
       bgColor: 0x21262e,
       borderRadius: 10,
       children: [
-        new Text({ text: name, style: { fill: 'white', fontSize: 14 }, y: 6, align: 'center' }),
+        new Text({ text: name, style: { fill: 'white', fontSize: 18 }, y: 6, align: 'center' }),
         ...rectComponents,
         new Rect({
           bgColor: 0xa7b7cd,
@@ -89,7 +94,7 @@ $pixi.watch((pixi) => {
           w: 100,
           h: 26,
           borderRadius: 5,
-          children: [new Text({ text: 'add item', style: { fill: 'black', fontSize: 12 }, y: 4, align: 'center' })],
+          children: [new Text({ text: 'add item', style: { fill: 'black', fontSize: 16 }, y: 4, align: 'center' })],
         }),
       ],
     });
@@ -188,25 +193,24 @@ sample({
 // dev tools:
 // add to jsx: <span style={{ position: 'fixed', right: 0, bottom: 0, backgroundColor: 'white' }} id="debug" />
 //
-// const $allState = combine({
-//   pixi: $pixi,
-//   scrollX: $scrollX,
-//   scrollY: $scrollY,
-//   cursorPosition: $cursorPosition,
-//   zoom: $zoom,
-// });
-//
-// tick.watch(() => {
-//   const { pixi, cursorPosition, zoom, scrollX, scrollY } = $allState.getState();
-//
-//   window.pixi = pixi;
-//   const debug = document.getElementById('debug');
-//   if (!debug) return;
-//   debug.innerText = JSON.stringify({
-//     pixi: { x: pixi.stage.x, y: pixi.stage.y, scale: pixi.stage.scale.x },
-//     cursorPosition,
-//     scroll: { scrollX, scrollY },
-//     zoom,
-//   });
-// });
-//
+const $allState = combine({
+  pixi: $pixi,
+  scrollX: $scrollX,
+  scrollY: $scrollY,
+  cursorPosition: $cursorPosition,
+  zoom: $zoom,
+});
+
+tick.watch(() => {
+  const { pixi, cursorPosition, zoom, scrollX, scrollY } = $allState.getState();
+
+  window.pixi = pixi;
+  const debug = document.getElementById('debug');
+  if (!debug) return;
+  debug.innerText = JSON.stringify({
+    pixi: { x: pixi.stage.x, y: pixi.stage.y, scale: pixi.stage.scale.x },
+    cursorPosition,
+    scroll: { scrollX, scrollY },
+    zoom,
+  });
+});

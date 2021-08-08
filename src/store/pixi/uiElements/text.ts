@@ -36,6 +36,7 @@ export class Text extends GeometryObject {
   update() {
     if (!this.pixiText) return;
     this.pixiText.x = this.x;
+    // console.log('y for tex ', `${this._text}`, this.y);
     this.pixiText.y = this.y;
     this.pixiText.style = this._style;
     this.pixiText.text = this._text;
@@ -53,7 +54,7 @@ export class Text extends GeometryObject {
     const calcMap = {
       left: () => this._x || this.parent?.x + this.parent?.paddingLeft,
       center: () => this.parent?.x + this.parent?.w / 2 - this._w / 2,
-      right: () => this._x + this.parent?._w - this._w,
+      right: () => (this._x || this.parent?.x) + this.parent.w + this.parent.paddingRight - this._w,
     };
 
     return calcMap[this.align]();
@@ -64,11 +65,19 @@ export class Text extends GeometryObject {
   }
 
   get y() {
-    if (this._y === null) {
-      return this.parent?.y + this.parent?.paddingTop;
+    if (this.bottom !== null) {
+      return this.parent?.y + this.parent?.h - this.h - this.bottom;
     }
 
-    const parentY = this.parent?.y || 0;
+    if (this._y === null) {
+      let indexOfCurrentElement = this.parent?.children?.findIndex(({ id }) => this.id === id) || 0;
+      indexOfCurrentElement = indexOfCurrentElement === -1 ? 0 : indexOfCurrentElement;
+      const beforeElements = this.parent?.children?.slice(0, indexOfCurrentElement) || [];
+      const sumOfHeightBeforeElements = beforeElements.reduce((acc, { h }) => acc + h, 0);
+      return this.parent?.y + this.parent?.paddingTop + sumOfHeightBeforeElements;
+    }
+
+    const parentY = this.parent?.y || 0; // relative
     return parentY + this._y;
   }
 
@@ -78,5 +87,9 @@ export class Text extends GeometryObject {
 
   get align() {
     return this._align;
+  }
+
+  get h() {
+    return typeof this._style.fontSize === 'number' ? this._style.fontSize : 0;
   }
 }

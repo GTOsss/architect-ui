@@ -1,4 +1,5 @@
 export interface IGeometryObject {
+  id?: number | string;
   x?: number;
   y?: number;
   w?: number;
@@ -13,6 +14,7 @@ export interface IGeometryObject {
 }
 
 export class GeometryObject {
+  id: string | number;
   _x: number;
   _y: number;
   _w: number;
@@ -26,6 +28,7 @@ export class GeometryObject {
   borderRadius: number;
 
   constructor({
+    id = null,
     x = null,
     y = null,
     w = null,
@@ -38,6 +41,7 @@ export class GeometryObject {
     bgColor = 0x000,
     borderRadius = 0,
   }) {
+    this.id = id;
     this._x = x;
     this._y = y;
     this._w = w;

@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { nanoid } from 'nanoid';
 import { Text } from './text';
 import { GeometryObject, IGeometryObject } from './geometryObject';
 
@@ -13,8 +14,8 @@ export class Rect extends GeometryObject {
   parent: null | Rect;
   children: (Rect | Text)[];
 
-  constructor({ pixi, children = [], ...rest }: IRect) {
-    super(rest);
+  constructor({ pixi, children = [], id, ...rest }: IRect) {
+    super({ ...rest, id: id ?? nanoid() });
     this._pixi = pixi;
 
     this.pixiGraphic = new PIXI.Graphics();
@@ -69,7 +70,11 @@ export class Rect extends GeometryObject {
     }
 
     if (this._y === null) {
-      return this.parent?.y + this.parent?.paddingTop;
+      let indexOfCurrentElement = this.parent?.children?.findIndex(({ id }) => this.id === id) || 0;
+      indexOfCurrentElement = indexOfCurrentElement === -1 ? 0 : indexOfCurrentElement;
+      const beforeElements = this.parent?.children?.slice(0, indexOfCurrentElement) || [];
+      const sumOfHeightBeforeElements = beforeElements.reduce((acc, { h }) => acc + h, 0);
+      return this.parent?.y + this.parent?.paddingTop + sumOfHeightBeforeElements;
     }
 
     const parentY = this.parent?.y || 0; // relative
@@ -94,10 +99,7 @@ export class Rect extends GeometryObject {
 
   get h() {
     if (this._h === null) {
-      return this.children.reduce((acc, el) => {
-        const childHeight = (el as Rect).h || (el as Text)._style?.fontSize || 0;
-        return acc + childHeight + this.paddingTop + this.paddingBottom;
-      }, 0);
+      return this.children.reduce((acc, el) => acc + el.h + this.paddingTop + this.paddingBottom, 0);
     }
 
     return this._h + this.paddingTop + this.paddingBottom;

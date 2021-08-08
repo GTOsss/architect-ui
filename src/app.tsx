@@ -15,6 +15,7 @@ const App = () => {
   return (
     <div>
       <div ref={setPixiRoot} onMouseMove={onMouseMoveHandler} />
+      <span style={{ position: 'fixed', right: 0, bottom: 0, backgroundColor: 'white' }} id="debug" />
     </div>
   );
 };
