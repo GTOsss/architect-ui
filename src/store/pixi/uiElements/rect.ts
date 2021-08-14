@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { nanoid } from 'nanoid';
+import { yGetter } from '@store/pixi/uiElements/commonMethods';
 import { Text } from './text';
 import { GeometryObject, IGeometryObject } from './geometryObject';
 
@@ -14,8 +14,8 @@ export class Rect extends GeometryObject {
   parent: null | Rect;
   children: (Rect | Text)[];
 
-  constructor({ pixi, children = [], id, ...rest }: IRect) {
-    super({ ...rest, id: id ?? nanoid() });
+  constructor({ pixi, children = [], ...rest }: IRect) {
+    super({ ...rest });
     this._pixi = pixi;
 
     this.pixiGraphic = new PIXI.Graphics();
@@ -53,6 +53,10 @@ export class Rect extends GeometryObject {
   }
 
   get x() {
+    if (this.right) {
+      return this.parent?.x + this.parent?.w - this.right - this.w;
+    }
+
     if (this._x === null) {
       return this.parent?.x + this.parent?.paddingLeft;
     }
@@ -65,20 +69,7 @@ export class Rect extends GeometryObject {
   }
 
   get y() {
-    if (this.bottom !== null) {
-      return this.parent?.y + this.parent?.h - this.h - this.bottom;
-    }
-
-    if (this._y === null) {
-      let indexOfCurrentElement = this.parent?.children?.findIndex(({ id }) => this.id === id) || 0;
-      indexOfCurrentElement = indexOfCurrentElement === -1 ? 0 : indexOfCurrentElement;
-      const beforeElements = this.parent?.children?.slice(0, indexOfCurrentElement) || [];
-      const sumOfHeightBeforeElements = beforeElements.reduce((acc, { h }) => acc + h, 0);
-      return this.parent?.y + this.parent?.paddingTop + sumOfHeightBeforeElements;
-    }
-
-    const parentY = this.parent?.y || 0; // relative
-    return parentY + this._y;
+    return yGetter(this);
   }
 
   set y(value) {
@@ -99,7 +90,13 @@ export class Rect extends GeometryObject {
 
   get h() {
     if (this._h === null) {
-      return this.children.reduce((acc, el) => acc + el.h + this.paddingTop + this.paddingBottom, 0);
+      return (
+        this.children
+          .filter(({ position }) => position === 'static')
+          .reduce((acc, el) => acc + el.h + el.marginBottom + el.marginTop, 0) +
+        this.paddingTop +
+        this.paddingBottom
+      );
     }
 
     return this._h + this.paddingTop + this.paddingBottom;

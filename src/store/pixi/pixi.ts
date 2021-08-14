@@ -52,6 +52,26 @@ const sourceMap = {
 //   return new Entry({ x, y, w: size, h: size, title: `${i % rowCount} : ${Math.floor(i / rowCount)}` });
 // });
 
+const getComponentName = (component, name: string): string => {
+  if (typeof component === 'string') {
+    return name;
+  }
+
+  if (component[1]) {
+    return component[1].name || name;
+  }
+
+  return name;
+};
+
+const getTemplateName = (component): string => {
+  if (Array.isArray(component)) {
+    return component[0];
+  }
+
+  return component;
+};
+
 $pixi.watch((pixi) => {
   if (!pixi) return null;
 
@@ -60,26 +80,55 @@ $pixi.watch((pixi) => {
   pixi.ticker.add(tick);
 
   Object.entries(sourceMap).forEach(([name, components], i) => {
-    const rectComponents = components.map((_, i) => {
+    const rectComponents = components.map((component, i) => {
       return new Rect({
         bgColor: 0x76808e,
+        marginBottom: 10,
         children: [
           new Rect({
+            bgColor: 0x8b9aae,
+            padding: 4,
+            paddingBottom: 10,
+            children: [
+              new Text({ text: 'name', style: { fill: 'black', fontSize: 12 } }),
+              new Text({
+                y: 4,
+                text: 'template',
+                style: { fill: 'black', fontSize: 12 },
+                right: 20,
+                align: 'right',
+                position: 'absolute',
+              }),
+              new Text({
+                text: getComponentName(component, name),
+                marginTop: 4,
+                style: { fill: 'black', fontSize: 16 },
+              }),
+              new Text({
+                text: getTemplateName(component),
+                style: { fill: 'black', fontSize: 16 },
+                y: 18,
+                align: 'right',
+                position: 'absolute',
+              }),
+            ],
+          }),
+          new Text({ text: `test ${i}`, style: { fill: 'black', fontSize: 18 } }),
+          new Rect({
+            padding: 5,
             h: 20,
             bgColor: 0x8b9aae,
-            children: [new Text({ text: `name`, style: { fill: 'black', fontSize: 12 }, id: 1 })],
+            children: [new Text({ text: 'path', style: { fill: 'black', fontSize: 12 } })],
           }),
-          new Text({ text: `test ${i}`, style: { fill: 'black', fontSize: 18 }, id: 1 }),
-          new Rect({ h: 20, bgColor: 0x8b9aae }),
         ],
       });
     });
 
     const rect = new Rect({
       pixi,
-      x: i * 250 + i * 20 + 10,
+      x: i * 300 + i * 20 + 10,
       y: 10,
-      w: 260,
+      w: 300,
       paddingTop: 12,
       paddingLeft: 10,
       paddingRight: 10,
@@ -90,7 +139,8 @@ $pixi.watch((pixi) => {
         ...rectComponents,
         new Rect({
           bgColor: 0xa7b7cd,
-          bottom: 10,
+          marginBottom: 10,
+          marginTop: 10,
           w: 100,
           h: 26,
           borderRadius: 5,
