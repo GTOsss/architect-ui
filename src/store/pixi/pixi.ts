@@ -29,6 +29,12 @@ export const tick = createEvent<number>();
 
 /// tests
 
+const defaultParams = {
+  component: { path: 'src/components' },
+  page: { path: 'src/pages' },
+  store: { path: 'src/store' },
+};
+
 const sourceMap = {
   stadiums: [
     'page',
@@ -40,6 +46,13 @@ const sourceMap = {
     //
     ['page', { rPath: '/stadiums', name: '[code]' }],
     ['component', { rPath: '/pages' }],
+    'store',
+  ],
+  user: [
+    //
+    ['page', { rPath: '/users', name: 'user' }],
+    ['component', { rPath: '/user' }],
+    ['component', { rPath: '/userAddition' }],
     'store',
   ],
 };
@@ -89,36 +102,85 @@ $pixi.watch((pixi) => {
             bgColor: 0x8b9aae,
             padding: 4,
             paddingBottom: 10,
+            marginBottom: 2,
             children: [
-              new Text({ text: 'name', style: { fill: 'black', fontSize: 12 } }),
+              new Text({ text: 'name', style: { fill: 'black', fontSize: 11, fontWeight: '600' } }),
               new Text({
                 y: 4,
                 text: 'template',
-                style: { fill: 'black', fontSize: 12 },
+                style: { fill: 'black', fontSize: 11, fontWeight: '600' },
                 right: 20,
                 align: 'right',
                 position: 'absolute',
               }),
               new Text({
                 text: getComponentName(component, name),
-                marginTop: 4,
+                marginTop: 0,
                 style: { fill: 'black', fontSize: 16 },
               }),
               new Text({
                 text: getTemplateName(component),
                 style: { fill: 'black', fontSize: 16 },
-                y: 18,
+                y: 16,
                 align: 'right',
                 position: 'absolute',
               }),
             ],
           }),
-          new Text({ text: `test ${i}`, style: { fill: 'black', fontSize: 18 } }),
+          new Text({
+            text: `test ${i}`,
+            style: { fill: '#0047B1', fontSize: 16 },
+            bgColor: 0x0047b1,
+            textDecoration: 'underline',
+            marginLeft: 5,
+            marginBottom: 3,
+          }),
+          new Text({
+            text: `test ${i}`,
+            style: { fill: '#0047B1', fontSize: 16 },
+            bgColor: 0x0047b1,
+            textDecoration: 'underline',
+            marginLeft: 5,
+            marginBottom: 3,
+          }),
+          new Text({
+            text: `test ${i}`,
+            bgColor: 0x0047b1,
+            style: { fill: '#0047B1', fontSize: 16 },
+            textDecoration: 'underline',
+            marginLeft: 5,
+            marginBottom: 3,
+          }),
           new Rect({
             padding: 5,
-            h: 20,
             bgColor: 0x8b9aae,
-            children: [new Text({ text: 'path', style: { fill: 'black', fontSize: 12 } })],
+            children: [
+              new Text({ text: 'path', style: { fill: 'black', fontSize: 11, fontWeight: '600' } }),
+              new Rect({
+                display: 'flex',
+                bgColor: 0x8b9aae,
+                marginTop: 4,
+                children: [
+                  new Text({
+                    text: '/test1',
+                    marginRight: 2,
+                    style: { fill: '#D6D6D6', fontWeight: '700', fontSize: 16 },
+                    bgColor: 0xd6d6d6,
+                  }),
+                  new Text({ text: '/test2', marginRight: 2, style: { fill: 'black', fontSize: 16 } }),
+                  new Text({ text: '/test3', marginRight: 2, style: { fill: 'black', fontSize: 16 } }),
+                ],
+              }),
+              new Text({
+                text: 'open folder',
+                textDecoration: 'underline',
+                style: { fill: '#0047B1', fontSize: 12 },
+                bgColor: 0x0047b1,
+                position: 'absolute',
+                bottom: 5,
+                align: 'right',
+              }),
+            ],
           }),
         ],
       });

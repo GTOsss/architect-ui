@@ -1,11 +1,14 @@
 import * as PIXI from 'pixi.js';
-import { yGetter } from '@store/pixi/uiElements/commonMethods';
+import { xGetterForFlex, yGetter } from '@store/pixi/uiElements/commonMethods';
 import { Text } from './text';
 import { GeometryObject, IGeometryObject } from './geometryObject';
+
+type Display = 'block' | 'flex';
 
 export interface IRect extends IGeometryObject {
   pixi?: PIXI.Application;
   children?: (Rect | Text)[];
+  display?: Display;
 }
 
 export class Rect extends GeometryObject {
@@ -13,13 +16,15 @@ export class Rect extends GeometryObject {
   _pixi: PIXI.Application;
   parent: null | Rect;
   children: (Rect | Text)[];
+  display: Display;
 
-  constructor({ pixi, children = [], ...rest }: IRect) {
+  constructor({ pixi, children = [], display = 'block', ...rest }: IRect) {
     super({ ...rest });
     this._pixi = pixi;
 
     this.pixiGraphic = new PIXI.Graphics();
 
+    this.display = display;
     this.children = children;
     this.children.forEach((el) => {
       el.parent = this;
@@ -57,8 +62,12 @@ export class Rect extends GeometryObject {
       return this.parent?.x + this.parent?.w - this.right - this.w;
     }
 
+    if (this._x === null && this.parent?.display === 'flex') {
+      return xGetterForFlex(this);
+    }
+
     if (this._x === null) {
-      return this.parent?.x + this.parent?.paddingLeft;
+      return this.parent?.x + this.parent?.paddingLeft + this.marginLeft;
     }
 
     return this._x;
@@ -89,6 +98,17 @@ export class Rect extends GeometryObject {
   }
 
   get h() {
+    if (this.display === 'flex') {
+      const childrenHeightValues = this.children
+        .filter(({ position }) => position === 'static')
+        .reduce((acc, el) => {
+          acc.push(el.h + el.marginBottom + el.marginTop);
+          return acc;
+        }, []);
+
+      return Math.max(...childrenHeightValues) + this.paddingTop + this.paddingBottom;
+    }
+
     if (this._h === null) {
       return (
         this.children
