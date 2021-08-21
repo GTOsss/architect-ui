@@ -19,68 +19,17 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@public/*": [
-        "./public/*"
-      ],
-      "@arcGenerated/*": [
-        "./src/arcGenerated/*"
-      ],
-      "@ts/*": [
-        "./src/ts/*"
+      "@assets/*": [
+        "./src/assets/*"
       ],
       "@components/*": [
         "./src/components/*"
       ],
-      "@sections/*": [
-        "./src/sections/*"
-      ],
-      "@api/*": [
-        "./src/api/*"
-      ],
-      "@contexts/*": [
-        "./src/contexts/*"
-      ],
-      "@hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@i18n/*": [
-        "./src/i18n/*"
-      ],
-      "@locales/*": [
-        "./src/locales/*"
-      ],
-      "@lib/*": [
-        "./src/lib/*"
-      ],
-      "@layouts/*": [
-        "./src/layouts/*"
-      ],
-      "@middlewares/*": [
-        "./src/middlewares/*"
-      ],
-      "@mock/*": [
-        "./src/mock/*"
-      ],
-      "@routes/*": [
-        "./src/routes/*"
-      ],
-      "@styles/*": [
-        "./src/styles/*"
-      ],
       "@store/*": [
         "./src/store/*"
       ],
-      "@utils/*": [
-        "./src/utils/*"
-      ],
-      "@vendors/*": [
-        "./src/vendors/*"
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ],
-      "@constants/*": [
-        "./src/constants/*"
+      "@styles": [
+        "./src/styles/*"
       ]
     }
   },

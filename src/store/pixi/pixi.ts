@@ -2,12 +2,14 @@ import * as PIXI from 'pixi.js';
 import { createEvent, createStore, restore, sample } from '@store/rootDomain';
 import { $zoom } from '@store/pixi/zoom';
 import { combine } from 'effector';
+import { Cursor } from '@store/pixi/uiElements/cursor';
+import iconPointer from '../../assets/icons/cursor-pointer.svg';
+import iconDefault from '../../assets/icons/cursor.svg';
 import { $cursorPosition } from './cursorPosition';
 import { $scrollX, $scrollY } from './scrollPosition';
 import { Rect, Text } from './uiElements';
 
 export const setPixiRoot = createEvent<HTMLDivElement>();
-
 export const $pixiRoot = restore<HTMLDivElement>(setPixiRoot, null);
 
 export const $pixi = createStore(
@@ -27,13 +29,15 @@ sample({
 
 export const tick = createEvent<number>();
 
+export const $pixiCursorElement = createStore<Cursor>(null);
+
 /// tests
 
-const defaultParams = {
-  component: { path: 'src/components' },
-  page: { path: 'src/pages' },
-  store: { path: 'src/store' },
-};
+// const defaultParams = {
+//   component: { path: 'src/components' },
+//   page: { path: 'src/pages' },
+//   store: { path: 'src/store' },
+// };
 
 const sourceMap = {
   stadiums: [
@@ -84,6 +88,17 @@ const getTemplateName = (component): string => {
 
   return component;
 };
+
+sample({
+  source: $pixi,
+  clock: $pixiRoot.updates.filterMap((root) => root),
+  fn: (pixi) => {
+    const cursor = new Cursor({ pixi, iconDefault, iconPointer });
+    cursor.render();
+    return cursor;
+  },
+  target: $pixiCursorElement,
+});
 
 $pixi.watch((pixi) => {
   if (!pixi) return null;
@@ -211,17 +226,7 @@ $pixi.watch((pixi) => {
       ],
     });
 
-    // const text = new Text({ pixi, text: name, style: { fill: 'black', fontSize: 14 }, x: 0, y: 0 });
-    // text.render();
-
-    window.r = rect;
     rect.render();
-
-    // const children = components.map((el) => {
-    //   const component = new Component({ pixi: p, x, y, w, name });
-    //   return component;
-    // });
-    // const entry = new Entry({ pixi: p, x, y: 50, w: entryWidth, title: name, children });
   });
 });
 
@@ -302,10 +307,27 @@ sample({
   }
 });
 
+combine({
+  pixiCursorElement: $pixiCursorElement,
+  cursorPosition: $cursorPosition,
+  scrollX: $scrollX,
+  scrollY: $scrollY,
+  zoom: $zoom,
+})
+  .updates.filter({ fn: ({ pixiCursorElement }) => !!pixiCursorElement })
+  .watch(({ pixiCursorElement, cursorPosition: { x, y }, scrollY, scrollX, zoom }) => {
+    if (zoom === 1) {
+      pixiCursorElement.x = x + scrollX;
+      pixiCursorElement.y = y + scrollY;
+    }
+    pixiCursorElement.x = (x + scrollX) * (1 / zoom);
+    pixiCursorElement.y = (y + scrollY) * (1 / zoom);
+  });
+
 // dev tools:
 // add to jsx: <span style={{ position: 'fixed', right: 0, bottom: 0, backgroundColor: 'white' }} id="debug" />
 //
-const $allState = combine({
+export const $allState = combine({
   pixi: $pixi,
   scrollX: $scrollX,
   scrollY: $scrollY,
@@ -316,7 +338,7 @@ const $allState = combine({
 tick.watch(() => {
   const { pixi, cursorPosition, zoom, scrollX, scrollY } = $allState.getState();
 
-  window.pixi = pixi;
+  // window.pixi = pixi;
   const debug = document.getElementById('debug');
   if (!debug) return;
   debug.innerText = JSON.stringify({

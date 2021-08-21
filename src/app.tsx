@@ -2,8 +2,14 @@ import React, { useEffect } from 'react';
 import { setPixiRoot } from '@store/pixi/pixi';
 import { onMouseMoveHandler } from '@store/pixi/cursorPosition';
 import { onWheel } from '@store/pixi/scrollPosition';
+import cx from 'clsx';
+import { $cursorType } from '@store/pixi/cursorType';
+import { useStore } from 'effector-react';
+import styles from './app.scss';
 
 const App = () => {
+  const cursorType = useStore($cursorType);
+
   useEffect(() => {
     document.addEventListener('wheel', onWheel, { passive: false });
 
@@ -14,7 +20,11 @@ const App = () => {
 
   return (
     <div>
-      <div ref={setPixiRoot} onMouseMove={onMouseMoveHandler} />
+      <div
+        className={cx(styles[`pixiRoot__cursor_${cursorType}`])}
+        ref={setPixiRoot}
+        onMouseMove={onMouseMoveHandler}
+      />
       <span style={{ position: 'fixed', right: 0, bottom: 0, backgroundColor: 'white' }} id="debug" />
     </div>
   );

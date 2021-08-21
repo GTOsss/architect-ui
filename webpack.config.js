@@ -17,7 +17,7 @@ module.exports = {
       {
         test: /\.s[ac]ss$/i,
         use: [
-          "style-loader",
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -27,7 +27,15 @@ module.exports = {
               },
             },
           },
-          "sass-loader",
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+          },
         ],
       },
     ],
@@ -37,7 +45,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js', '.jsx' ],
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
@@ -46,3 +54,4 @@ module.exports = {
   },
   plugins: [new HtmlWebpackPlugin({template: 'index.html'})],
 };
+
