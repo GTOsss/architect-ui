@@ -3,6 +3,7 @@ import { createEvent, createStore, restore, sample } from '@store/rootDomain';
 import { $zoom } from '@store/pixi/zoom';
 import { combine } from 'effector';
 import { Cursor } from '@store/pixi/uiElements/cursor';
+import { $cursorPositionPixi } from '@store/pixi/cursorPositionPixi';
 import iconPointer from '../../assets/icons/cursor-pointer.svg';
 import iconDefault from '../../assets/icons/cursor.svg';
 import { $cursorPosition } from './cursorPosition';
@@ -309,19 +310,12 @@ sample({
 
 combine({
   pixiCursorElement: $pixiCursorElement,
-  cursorPosition: $cursorPosition,
-  scrollX: $scrollX,
-  scrollY: $scrollY,
-  zoom: $zoom,
+  cursorPositionPixi: $cursorPositionPixi,
 })
   .updates.filter({ fn: ({ pixiCursorElement }) => !!pixiCursorElement })
-  .watch(({ pixiCursorElement, cursorPosition: { x, y }, scrollY, scrollX, zoom }) => {
-    if (zoom === 1) {
-      pixiCursorElement.x = x + scrollX;
-      pixiCursorElement.y = y + scrollY;
-    }
-    pixiCursorElement.x = (x + scrollX) * (1 / zoom);
-    pixiCursorElement.y = (y + scrollY) * (1 / zoom);
+  .watch(({ pixiCursorElement, cursorPositionPixi: { x, y } }) => {
+    pixiCursorElement.x = x;
+    pixiCursorElement.y = y;
   });
 
 // dev tools:

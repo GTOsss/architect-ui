@@ -1,6 +1,5 @@
 import { MouseEvent } from 'react';
 import { createEvent, restore } from '@store/rootDomain';
-// import { $canvas } from '@store/canvas';
 
 export type Position = {
   x: number;
