@@ -150,6 +150,7 @@ $pixi.watch((pixi) => {
             textDecoration: 'underline',
             marginLeft: 5,
             marginBottom: 3,
+            cursor: 'pointer',
           }),
           new Text({
             text: `test ${i}`,
@@ -158,6 +159,7 @@ $pixi.watch((pixi) => {
             textDecoration: 'underline',
             marginLeft: 5,
             marginBottom: 3,
+            cursor: 'pointer',
           }),
           new Text({
             text: `test ${i}`,
@@ -166,6 +168,7 @@ $pixi.watch((pixi) => {
             textDecoration: 'underline',
             marginLeft: 5,
             marginBottom: 3,
+            cursor: 'pointer',
           }),
           new Rect({
             padding: 5,
@@ -193,8 +196,10 @@ $pixi.watch((pixi) => {
                 style: { fill: '#0047B1', fontSize: 12 },
                 bgColor: 0x0047b1,
                 position: 'absolute',
-                bottom: 5,
+                paddingBottom: 8,
+                bottom: -2,
                 align: 'right',
+                cursor: 'pointer',
               }),
             ],
           }),

@@ -1,7 +1,4 @@
-import { Text } from './text';
-import { Rect } from './rect';
-
-type AnyGeometryObject = Text | Rect;
+import { AnyGeometryObject } from '@store/pixi/uiElements/types';
 
 const getStaticBeforeElements = (ctx: AnyGeometryObject) => {
   let indexOfCurrentElement = ctx.parent?.children?.findIndex(({ id }) => ctx.id === id) || 0;

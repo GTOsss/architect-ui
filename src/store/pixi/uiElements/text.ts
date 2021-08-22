@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js';
 import { IGeometryObject, GeometryObject } from '@store/pixi/uiElements/geometryObject';
 import { Rect } from '@store/pixi/uiElements/rect';
 import { xGetterForFlex, yGetter } from '@store/pixi/uiElements/commonMethods';
+import { pushElement } from '@store/pixi/pixiElements';
+import { CursorType } from '@store/pixi/uiElements/types';
 
 type TextDecoration = 'underline' | 'none';
 
@@ -11,6 +13,7 @@ interface IText extends IGeometryObject {
   style: Partial<PIXI.TextStyle>;
   pixi?: PIXI.Application;
   textDecoration?: TextDecoration;
+  cursor?: CursorType;
 }
 
 export class Text extends GeometryObject {
@@ -22,9 +25,12 @@ export class Text extends GeometryObject {
   parent: Rect;
   textDecoration: TextDecoration;
   pixiGraphicUnderline: PIXI.Graphics;
+  cursor: CursorType;
 
-  constructor({ text, pixi, style, align = 'left', textDecoration = 'none', ...rest }: IText) {
+  constructor({ text, pixi, style, align = 'left', textDecoration = 'none', cursor = 'default', ...rest }: IText) {
     super(rest);
+    pushElement(this);
+
     this._text = text;
     this._style = style;
     this.pixiText = new PIXI.Text(text);
@@ -35,6 +41,7 @@ export class Text extends GeometryObject {
 
     this._pixi = pixi;
     this._align = align;
+    this.cursor = cursor;
   }
 
   render() {

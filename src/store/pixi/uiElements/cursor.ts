@@ -26,7 +26,7 @@ export class Cursor {
 
   render() {
     this.update();
-    this._pixi.stage.addChild(this.iconCursorSprite);
+    // this._pixi.stage.addChild(this.iconCursorSprite);
   }
 
   update() {
