@@ -1,4 +1,4 @@
-import { AnyGeometryObject } from '@store/pixi/uiElements/types';
+import { AnyGeometryObject } from '@components/pixiElements/types';
 
 const getStaticBeforeElements = (ctx: AnyGeometryObject) => {
   let indexOfCurrentElement = ctx.parent?.children?.findIndex(({ id }) => ctx.id === id) || 0;

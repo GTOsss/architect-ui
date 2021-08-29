@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { xGetterForFlex, yGetter } from '@store/pixi/uiElements/commonMethods';
+import { xGetterForFlex, yGetter } from '@components/pixiElements/commonMethods';
 import { pushElement } from '@store/pixi/pixiElements';
-import { CursorType } from '@store/pixi/uiElements/types';
+import { CursorType, Event } from '@components/pixiElements/types';
 import { Text } from './text';
 import { GeometryObject, IGeometryObject } from './geometryObject';
 
@@ -12,6 +12,7 @@ export interface IRect extends IGeometryObject {
   children?: (Rect | Text)[];
   display?: Display;
   cursor?: CursorType;
+  onClick?: (e: Event<Rect>) => void;
 }
 
 export class Rect extends GeometryObject {
@@ -21,8 +22,9 @@ export class Rect extends GeometryObject {
   children: (Rect | Text)[];
   display: Display;
   cursor: CursorType;
+  onClick?: (e: Event<Rect>) => void;
 
-  constructor({ pixi, children = [], display = 'block', cursor = 'default', ...rest }: IRect) {
+  constructor({ pixi, children = [], display = 'block', cursor = 'default', onClick, ...rest }: IRect) {
     super({ ...rest });
     pushElement(this);
 
@@ -36,6 +38,7 @@ export class Rect extends GeometryObject {
     this.children.forEach((el) => {
       el.parent = this;
     });
+    this.onClick = onClick;
   }
 
   render() {

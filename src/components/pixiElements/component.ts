@@ -1,4 +1,4 @@
-import { Rect } from '@store/pixi/uiElements/rect';
+import { Rect } from '@components/pixiElements/rect';
 import * as PIXI from 'pixi.js';
 
 export class Component extends Rect {

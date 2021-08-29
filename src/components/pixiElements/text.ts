@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js';
-import { IGeometryObject, GeometryObject } from '@store/pixi/uiElements/geometryObject';
-import { Rect } from '@store/pixi/uiElements/rect';
-import { xGetterForFlex, yGetter } from '@store/pixi/uiElements/commonMethods';
+import { IGeometryObject, GeometryObject } from '@components/pixiElements/geometryObject';
+import { Rect } from '@components/pixiElements/rect';
+import { xGetterForFlex, yGetter } from '@components/pixiElements/commonMethods';
 import { pushElement } from '@store/pixi/pixiElements';
-import { CursorType } from '@store/pixi/uiElements/types';
+import { CursorType, Event } from '@components/pixiElements/types';
 
 type TextDecoration = 'underline' | 'none';
 
@@ -14,6 +14,7 @@ interface IText extends IGeometryObject {
   pixi?: PIXI.Application;
   textDecoration?: TextDecoration;
   cursor?: CursorType;
+  onClick?: (e: Event<Text>) => void;
 }
 
 export class Text extends GeometryObject {
@@ -26,8 +27,18 @@ export class Text extends GeometryObject {
   textDecoration: TextDecoration;
   pixiGraphicUnderline: PIXI.Graphics;
   cursor: CursorType;
+  onClick?: (e: Event<Text>) => void;
 
-  constructor({ text, pixi, style, align = 'left', textDecoration = 'none', cursor = 'default', ...rest }: IText) {
+  constructor({
+    text,
+    pixi,
+    style,
+    align = 'left',
+    textDecoration = 'none',
+    cursor = 'default',
+    onClick,
+    ...rest
+  }: IText) {
     super(rest);
     pushElement(this);
 
@@ -35,6 +46,7 @@ export class Text extends GeometryObject {
     this._style = style;
     this.pixiText = new PIXI.Text(text);
     this.pixiGraphicUnderline = new PIXI.Graphics();
+    this.onClick = onClick;
 
     this.textDecoration = textDecoration;
     // this._w = PIXI.TextMetrics.measureText(text, new PIXI.TextStyle(style)).width;

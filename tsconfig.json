@@ -28,8 +28,11 @@
       "@store/*": [
         "./src/store/*"
       ],
-      "@styles": [
+      "@styles/*": [
         "./src/styles/*"
+      ],
+      "@view/*": [
+        "./src/view/*"
       ]
     }
   },

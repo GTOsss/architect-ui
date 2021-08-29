@@ -5,6 +5,7 @@ import { onWheel } from '@store/pixi/scrollPosition';
 import cx from 'clsx';
 import { $cursorType } from '@store/pixi/cursorType';
 import { useStore } from 'effector-react';
+import { onClickStart } from '@store/pixi/pixiOnClick';
 import styles from './app.scss';
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
         className={cx(styles[`pixiRoot__cursor_${cursorType}`])}
         ref={setPixiRoot}
         onMouseMove={onMouseMoveHandler}
+        onClick={onClickStart}
       />
       <span style={{ position: 'fixed', right: 0, bottom: 0, backgroundColor: 'white' }} id="debug" />
     </div>
