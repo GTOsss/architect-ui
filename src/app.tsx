@@ -6,6 +6,7 @@ import cx from 'clsx';
 import { $cursorType } from '@store/pixi/cursorType';
 import { useStore } from 'effector-react';
 import { onClickStart } from '@store/pixi/pixiOnClick';
+
 import styles from './app.scss';
 
 const App = () => {

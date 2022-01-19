@@ -1,5 +1,6 @@
 import { Rect, Text } from '@store/../components/pixiElements';
 import { tick } from '@store/pixi/pixi';
+import { openFileInIdeaFx } from '@store/ideaApi';
 
 const getComponentName = (component, name: string): string => {
   if (typeof component === 'string') {
@@ -23,11 +24,11 @@ const getTemplateName = (component): string => {
 
 /// tests
 
-// const defaultParams = {
-//   component: { path: 'src/components' },
-//   page: { path: 'src/pages' },
-//   store: { path: 'src/store' },
-// };
+const defaultParams = {
+  component: { path: 'src/components' },
+  page: { path: 'src/pages' },
+  store: { path: 'src/store' },
+};
 
 const sourceMap = {
   stadiums: [
@@ -101,9 +102,7 @@ export const pixiScene = ({ pixi }) => {
             marginLeft: 5,
             marginBottom: 3,
             cursor: 'pointer',
-            onClick: (e) => {
-              console.log('onClick', e);
-            },
+            onClick: () => openFileInIdeaFx('src/components/pixiScene.ts'),
           }),
           new Text({
             text: `test ${j}`,
