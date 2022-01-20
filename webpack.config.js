@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -52,6 +53,11 @@ module.exports = {
     compress: true,
     port: 3000,
   },
-  plugins: [new HtmlWebpackPlugin({template: 'index.html'})],
+  plugins: [
+    new HtmlWebpackPlugin({ template: 'index.html' }),
+    new webpack.DefinePlugin({
+    'process.env.DIRNAME': JSON.stringify(__dirname)
+  })
+  ],
 };
 
