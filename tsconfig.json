@@ -40,7 +40,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "architect/source_map/source-map-module.js"  ],
   "exclude": [
     "node_modules"
   ]

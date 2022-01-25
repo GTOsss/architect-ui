@@ -23,8 +23,9 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
+                mode: 'local',
                 localIdentName: '[name]_[local]_[hash:base64:5]',
-                auto: (resourcePath) => !resourcePath.endsWith('.module.scss'),
+                auto: /\.module\.\w+$/i,
               },
             },
           },

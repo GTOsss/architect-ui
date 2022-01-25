@@ -1,0 +1,14 @@
+import React, { memo } from 'react';
+import * as styles from './{{name}}.module.scss';
+
+interface IProps {}
+
+const {{toCamelCase(name)}} = ({}: IProps) => {
+  return (
+    <div className={styles.root}>
+      <h1>{{toCamelCase(name)}}</h1>
+    </div>
+  );
+};
+
+export default memo({{toCamelCase(name)}});
