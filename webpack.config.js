@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require ('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
@@ -33,12 +34,16 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpg|gif|svg)$/i,
+        test: /\.(png|jpg|gif)$/i,
         use: [
           {
             loader: 'url-loader',
           },
         ],
+      },
+      {
+        test: /\.svg$/,
+        use: '@svgr/webpack',
       },
     ],
   },
@@ -57,8 +62,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({ template: 'index.html' }),
     new webpack.DefinePlugin({
-    'process.env.DIRNAME': JSON.stringify(__dirname)
-  })
+      'process.env': JSON.stringify(process.env),
+      'process.env.DIRNAME': JSON.stringify(__dirname)
+    })
   ],
 };
 

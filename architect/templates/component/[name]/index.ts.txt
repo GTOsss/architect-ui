@@ -1,3 +1,0 @@
-import {{toCamelCase(name)}} from './{{name}}';
-
-export default {{toCamelCase(name)}};

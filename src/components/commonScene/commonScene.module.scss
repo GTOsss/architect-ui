@@ -1,7 +1,56 @@
 .root {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  // align-items: center;
+  justify-content: center;
+  align-items: center;
   position: relative;
+
+  height: 100vh;
+}
+
+.Atom {
+  margin-right: 150px;
+}
+
+.Atom, .Module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Tabs {
+  position: absolute;
+  top: 20px;
+
+  display: flex;
+
+  width: 100%;
+  z-index: 1;
+
+  & > button {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    border-radius: 8px;
+
+    height: 15px;
+
+    transition: 0.5s;
+  }
+
+  & > .ActiveButton {
+    background: #1262b1;
+    color: white;
+  }
+}
+
+.CanvasWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
+.ActiveCanvas {
+  display: block;
 }
