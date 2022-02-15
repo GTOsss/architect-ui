@@ -30,7 +30,6 @@ export const onWheelFx = createEffect(async ({ canvas, event }) => {
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
     canvas.zoomToPoint({ x: e.offsetX, y: e.offsetY }, zoom);
-    console.log(canvas.viewportTransform);
     event.e.preventDefault();
     event.e.stopPropagation();
   } else if (e.shiftKey) {

@@ -26,7 +26,6 @@ const makeConnection = createEvent();
 export const $canvasJSON = createStore<Canvas>(null).on(initCanvasJSONFx.doneData, (_, data) => data);
 
 export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any; canvas: Canvas }) => {
-  console.log(json)
   try {
     canvas.loadFromJSON(
       json,
@@ -122,6 +121,7 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
   }
   canvas.on('object:moving', moveLineFx);
   canvas.on('mouse:wheel', onWheel);
+  return;
 });
 
 export const getJSONFx = createEffect(async () => {

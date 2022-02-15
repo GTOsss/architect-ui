@@ -74,5 +74,8 @@
     "webpack": "^5.35.1",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "peerDependencies": {
+    "architect-project": "^2.0.4"
   }
 }
