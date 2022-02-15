@@ -8,29 +8,31 @@ type Element = [name: string, components: Array<Component>];
 export const makeAtomComponent = (element: Element, makeConnection: Event<fabric.Circle>, index: number) => {
   const [name, components] = element;
   const boxWidth = 180;
-  const boxHeight = 190 + components.length * 20;
+  const boxHeight = 140 + (components.length - 1) * 100 + 20;
   const rect = new fabric.Rect({
     top: 0,
     left: 0,
     width: boxWidth,
     height: boxHeight,
-    fill: 'rgba(90, 90, 90)',
+    fill: 'rgb(33, 38, 46)',
+    // fill: 'rgb(118, 128, 142)',
     rx: 10, // horizontal border radius
     ry: 10, // vertical border radius
   });
 
-  const title = new fabric.Text(name, {
-    originX: 'center',
-    left: 90, // half of main rect width using for proper centering
+  const title = new fabric.Text(`name: ${name}`, {
+    originX: 'left',
+    left: 10, // half of main rect width using for proper centering
     top: 10,
-    fontSize: 20,
+    fontSize: 14,
+    fill: 'white'
   });
 
   const port1 = new fabric.Circle({
     radius: 5,
     fill: 'white',
     stroke: 'gray',
-    left: 85,
+    left: boxWidth / 2 - 5,
     top: -5,
     name: 'port',
   });
@@ -41,7 +43,7 @@ export const makeAtomComponent = (element: Element, makeConnection: Event<fabric
     radius: 5,
     fill: 'white',
     stroke: 'gray',
-    left: 175,
+    left: boxWidth - 5,
     top: boxHeight / 2 - 5,
     name: 'port',
   });
@@ -52,7 +54,7 @@ export const makeAtomComponent = (element: Element, makeConnection: Event<fabric
     radius: 5,
     fill: 'white',
     stroke: 'gray',
-    left: 85,
+    left: boxWidth / 2 - 5,
     top: boxHeight - 5,
     name: 'port',
   });
@@ -70,29 +72,80 @@ export const makeAtomComponent = (element: Element, makeConnection: Event<fabric
 
   port4.on('mousedown', () => makeConnection(port4));
 
+  const blocks = new fabric.Text('Blocks:', {
+    top: 34,
+    left: 10,
+    fill: 'white',
+    fontSize: 12,
+  })
+
   const atoms = components.map((component, index) => {
-    if (typeof component === 'string') {
-      const text = new fabric.Text(component, {
-        originX: 'center',
-        originY: 'center',
-        left: 90, // half of main rect width using for proper centering
-        top: boxHeight / 2 - 15 * (components.length / 2 - index), // centering for cases with several files in component
+      const componentType = typeof component === 'string' ? component : component[0];
+      const rect = new fabric.Rect({
+        width: boxWidth - 20,
+        height: 80,
+        fill: 'rgb(118, 128, 142)',
+      });
+
+      const typeTitle = new fabric.Text('type:', {
+        top: 5,
+        left: 5,
         fontSize: 10,
       });
-      
-      return text;
-    }
-    const text = new fabric.Text(component[0], {
-      originX: 'center',
-      originY: 'center',
-      left: 90, // half of main rect width using for proper centering
-      top: boxHeight / 2 - 15 * (components.length / 2 - index), // centering for cases with several files in component
-      fontSize: 10,
-    });
-    return text;
+
+      const type = new fabric.Text(componentType, {
+        top: 15,
+        left: 5,
+        fontSize: 10,
+      });
+
+      const pathTitle = new fabric.Text('path:', {
+        originX: 'left',
+        top: 30,
+        left: 5,
+        fontSize: 10,
+      });
+
+      const path = new fabric.Text('src/components/button/store.ts', {
+        originX: 'left',
+        top: 40,
+        left: 5,
+        fontSize: 10,
+      });
+
+      const buttonRect = new fabric.Rect({
+        width: 40,
+        height: 15,
+        rx: 5,
+        ry: 5,
+        fill: 'rgb(245, 243, 239)',
+      });
+
+      const buttonText = new fabric.Text('Open file', {
+        originX: 'center',
+        originY: 'center',
+        top: 7.5,
+        left: 20,
+        fill: 'rgb(45, 45, 45)',
+        fontSize: 10,
+      });
+
+      const button = new fabric.Group([buttonRect, buttonText], {
+        originX: 'center',
+        top: 60,
+        left: (boxWidth - 20) / 2,
+      });
+
+      const group = new fabric.Group([rect, typeTitle, type, pathTitle, path, button], {
+        top: 56 + index * 100,
+        left: 10,
+        width: boxWidth - 20,
+      });
+
+      return group;
   });
 
-  const group = new fabric.Group([rect, title, port1, port2, port3, port4, ...atoms], {
+  const group = new fabric.Group([rect, title, blocks, port1, port2, port3, port4, ...atoms], {
     top: 250,
     left: 500 + (boxWidth + 20) * index,
     hasControls: false, // disable scaling and rotating corners
@@ -137,3 +190,14 @@ export const makeAtomComponent = (element: Element, makeConnection: Event<fabric
 //       fontSize: 10,
 //     });
 
+
+
+// old 
+//  const text = new fabric.Text(component, {
+//    originX: 'center',
+//    originY: 'center',
+//    left: 90, // half of main rect width using for proper centering
+//    top: boxHeight / 2 - 15 * (components.length / 2 - index), // centering for cases with several files in component
+//    fontSize: 10,
+//    fill: 'black',
+//  });
