@@ -14,6 +14,7 @@ export const loadFromAtom = createEvent();
 export const loadFromAtomFx = createEffect(async ({ map, canvas }) => {
    try {
      let previousBottom = null;
+     console.log(map)
      Object.entries(map).forEach((element, index) => {
        const component = makeAtomComponent(element as any, makeConnection, index, previousBottom);
        previousBottom = component.top + component.height;

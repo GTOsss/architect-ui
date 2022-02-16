@@ -1,11 +1,10 @@
 import { fabric } from 'fabric';
 import { fsApi } from '@store/fsApi';
 import { createEffect, createStore, createEvent, sample, guard } from '../rootDomain';
-import { Canvas, Circle, IEvent } from 'fabric/fabric-impl';
+import { Canvas, IEvent } from 'fabric/fabric-impl';
 import { addLineArrowFx } from './extra-classes';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx, setActivePort } from './handlers';
-import { getCanvasFx } from './fabric';
 
 export const loadFromJSON = createEvent();
 const onWheel = createEvent<IEvent>();

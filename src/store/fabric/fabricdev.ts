@@ -12,3 +12,51 @@ sample({
   clock: initApp,
   target: [initCanvasJSONFx, initMapCanvasFx],
 });
+
+// код ниже особо ничего не делает
+
+// const $fabric = createStore({
+//   canvasJSON: {
+
+//   },
+//   sourceMapCanvas: {
+
+//   }
+// });
+
+// sample({
+//   source: { canvasJSON: $canvasJSON, fabric: $fabric },
+//   clock: loadFromJSONFx.doneData,
+//   fn: ({ canvasJSON, fabric }) => ({ ...fabric, canvasJSON: canvasJSON._objects }),
+//   target: $fabric,
+// });
+
+// sample({
+//   source: { sourceMapCanvas: $sourceMapCanvas, fabric: $fabric },
+//   clock: loadFromAtomFx.doneData,
+//   fn: ({ sourceMapCanvas, fabric }) => ({ ...fabric, sourceMapCanvas: sourceMapCanvas._objects }),
+//   target: $fabric,
+// });
+
+// const makeAtomComponent = (data) => {};
+
+// const createComponentFx = createEffect(async ( type: string, canvas: Canvas, data ) => {
+//   if (type === 'atom') {
+//     const newComp = makeAtomComponent(data);
+//     canvas.add(newComp);
+//     canvas.renderAll();
+//     return newComp;
+//   }
+// })
+
+// const sendFileFx = createEffect(async ({ atomMap, params }) => {
+//   const file = generateAtomMapFile(params.data, atomMap);
+//   return await fsApi.post({ url: 'source-map/atom', data: file });
+// })
+
+// sample({
+//   source: $atomMap,
+//   clock: createComponentFx.done,
+//   fn: (atomMap, { params }) => ({ atomMap, params }),
+//   target: 
+// })

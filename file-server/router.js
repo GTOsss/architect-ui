@@ -1,5 +1,6 @@
 const Router = require('express').Router;
 const prettier = require('prettier');
+const FileService = require('./service');
 const fs = require('fs');
 
 const router = new Router();
@@ -15,12 +16,13 @@ router.get('/source-map/module', (req, res) => {
   }
 });
 
-router.get('/source-map/atom', (req, res) => {
+router.get('/source-map/atom', async (req, res) => {
   try {
     const appRoot = process.cwd();
     const atomPath = `${appRoot}/architect/source_map/source-map-atom`;
     const file = require(atomPath);
-    res.send(file);
+    const withPaths = await FileService.getAllAPaths(file);
+    res.send(withPaths);
   } catch (error) {
     console.log(error);
     res.sendStatus(500).send(error);
@@ -93,8 +95,6 @@ router.get('/canvas', (req, res) => {
   try {
     const projectPath = process.cwd();
     const canvas = fs.readFileSync(`${projectPath}/architect/canvas/canvas.json`);
-    // console.log();
-    // const canvas = require(`${projectPath}/architect/canvas/canvas.json`);
     res.status(200).send(JSON.stringify(JSON.parse(canvas)));
   } catch (error) {
     res.status(500).send(error)};

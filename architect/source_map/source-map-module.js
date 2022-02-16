@@ -1,7 +1,48 @@
-const aliases = { rc: 'component' };
+const aliases = {
+  c: 'component',
+  s: 'store',
+  i: 'index',
+  f: 'file',
+};
 
-const extensions = { component: 'tsx' };
+const map = {
+  'arcGenerated/endpoints': {
+    endpoints: 'endpoints',
+  },
+  'components/layouts': {
+    main: 'component',
+  },
+  'components/inputs': {
+    index: 'index',
+    inputSelect: 'component',
+  },
+  'components/common/teams': {
+    birthdays: 'component',
+    teamsMainFilters: 'component',
+    newsItem: 'component',
+  },
+  'components/common': {
+    newsItem: 'component',
+    match: 'component',
+  },
+  'components/common/table': {
+    index: 'index',
+    tableContainer: 'component',
+    table: 'component',
+    tableRow: 'component',
+    tableHead: 'component',
+    tableBody: 'component',
+    tableCell: 'component',
+  },
+  'components/common/table/context': {
+    context: 'file',
+  },
+  'components/new-test': {
+    test: 'component',
+  },
+};
 
-const map = { components: { button: 'component', name111: 'component' } };
-
-module.exports = { map, aliases, extensions };
+module.exports = {
+  aliases,
+  map,
+};

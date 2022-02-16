@@ -166,7 +166,7 @@ export const makeModuleComponent = (
   groupIndex: number,
   previousBottom: null | number,
 ) => {
-  console.log(element)
+  // console.log(element)
   const [name, type] = element;
   const boxWidth = 180;
   const boxHeight = 124;
