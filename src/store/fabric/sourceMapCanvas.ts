@@ -5,10 +5,20 @@ import { makeAtomComponent, makeModuleComponent } from '../../utils/makeComponen
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx } from './handlers';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
 import { Canvas } from 'fabric/fabric-impl';
+import { fsApi } from '@store/fsApi';
 
 const makeConnection = createEvent<fabric.Circle>();
 const onWheel = createEvent();
 const mouseDown = createEvent();
+
+export const saveCanvas = createEvent();
+const sendCanvasFx = createEffect(async (canvas) => {
+  const result = await fsApi.post({
+    endpoint: '/canvas',
+    data: canvas.toJSON(['hasControls', 'subTargetCheck', 'name', 'addChild', 'from', 'to', 'selectable']),
+  });
+  return result;
+});
 
 export const loadFromAtom = createEvent();
 export const loadFromAtomFx = createEffect(async ({ map, canvas }) => {
@@ -97,4 +107,10 @@ sample({
   clock: mouseDown,
   fn: ({ activePort, canvas }, event) => ({ activePort, canvas, event }),
   target: mouseDownFx,
+});
+
+sample({
+  source: $sourceMapCanvas,
+  clock: saveCanvas,
+  target: sendCanvasFx,
 });

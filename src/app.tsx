@@ -4,7 +4,7 @@ import CommonScene from '@components/commonScene';
 import Layout from '@components/Layout';
 import { $atomMap, $moduleMap } from '@store/sourceMaps';
 import { $canvasJSON, $JSON } from '@store/fabric/canvasJSON';
-import { initApp } from '@store/fabric/fabricdev';
+import { initApp } from '@store/fabric/fabric';
 
 const App = () => {
   const atomMap = useStore($atomMap);
