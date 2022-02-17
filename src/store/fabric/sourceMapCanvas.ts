@@ -13,11 +13,11 @@ const mouseDown = createEvent();
 export const loadFromAtom = createEvent();
 export const loadFromAtomFx = createEffect(async ({ map, canvas }) => {
    try {
-     let previousBottom = null;
+     let previousBottom = 150;
      console.log(map)
      Object.entries(map).forEach((element, index) => {
        const component = makeAtomComponent(element as any, makeConnection, index, previousBottom);
-       previousBottom = component.top + component.height;
+      //  previousBottom = component.top + component.height;
        canvas.add(component);
      });
      canvas.renderAll();
@@ -70,12 +70,12 @@ sample({
   target: getModuleMapFx,
 })
 
-sample({
-  source: $sourceMapCanvas,
-  clock: getModuleMapFx.doneData,
-  fn: (canvas, moduleMap) => ({ map: moduleMap.map, canvas }),
-  target: loadFromModuleFx,
-});
+// sample({
+//   source: $sourceMapCanvas,
+//   clock: getModuleMapFx.doneData,
+//   fn: (canvas, moduleMap) => ({ map: moduleMap.map, canvas }),
+//   target: loadFromModuleFx,
+// });
 
 sample({
   source: { activePort: $activePort, arrowStyle: $arrowStyle, connectionMode: $connectionsMode, canvas: $sourceMapCanvas },

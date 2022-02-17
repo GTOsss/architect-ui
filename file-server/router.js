@@ -19,9 +19,9 @@ router.get('/source-map/module', (req, res) => {
 router.get('/source-map/atom', async (req, res) => {
   try {
     const appRoot = process.cwd();
-    const atomPath = `${appRoot}/architect/source_map/source-map-atom`;
+    const atomPath = `${appRoot}/architect/source_map/source-map-atom.js`;
     const file = require(atomPath);
-    const withPaths = await FileService.getAllAPaths(file);
+    const withPaths = await FileService.getAllAPaths(JSON.parse(JSON.stringify(file)));
     res.send(withPaths);
   } catch (error) {
     console.log(error);

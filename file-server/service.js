@@ -6,15 +6,12 @@ const config = require(configPath.config);
 class FileService {
   async getAllAPaths(sourceMap) {
     try {
-
-      const sourceMapByAtoms = { ...sourceMap.map };
-      const newSourceMap = { ...sourceMap };
-
+      const newSourceMap = { ...sourceMap, map: { ...sourceMap.map } };
       const { map, aliases = {}, defaultParams: allDefaultParams = {} } = sourceMap;
 
       const templates = getObjectWithPaths(configPath.templatesPath || '');
       const templateMap = parseFiles(templates);
-      Object.entries(sourceMapByAtoms).forEach(([componentName, templates]) => {
+      Object.entries(newSourceMap.map).forEach(([componentName, templates]) => {
         templates.forEach((template, index) => {
           const templateIsString = typeof template === 'string';
 
@@ -67,17 +64,17 @@ class FileService {
               });
             }
             filePath = filePath.replace(inputPath, '').replace(config.templateExt, '');
-            if (typeof sourceMapByAtoms[componentName][index] === 'string') {
-              sourceMapByAtoms[componentName][index] = [sourceMapByAtoms[componentName][index], { components: [filePath], configOutput: config.output, defaultPath: defaultParams.path, rPath }]
-            } else if (sourceMapByAtoms[componentName][index][1].components) {
-              sourceMapByAtoms[componentName][index][1].components.push(filePath);
+            if (typeof newSourceMap.map[componentName][index] === 'string') {
+              newSourceMap.map[componentName][index] = [newSourceMap.map[componentName][index], { blocks: [filePath], configOutput: config.output, defaultPath: defaultParams.path, rPath }]
+            } else if (newSourceMap.map[componentName][index][1].blocks) {
+              newSourceMap.map[componentName][index][1].blocks.push(filePath);
             } else {
-              sourceMapByAtoms[componentName][index][1] = { ...sourceMapByAtoms[componentName][index][1], components: [filePath], configOutput: config.output, defaultPath: defaultParams.path, rPath }
+              newSourceMap.map[componentName][index][1] = { ...newSourceMap.map[componentName][index][1], blocks: [filePath], configOutput: config.output, defaultPath: defaultParams.path, rPath }
             }
           });
         });
       });
-      newSourceMap.map = sourceMapByAtoms
+      // console.log(newSourceMap);
       return newSourceMap;
     } catch(error) {
       console.log('!!!', error);
