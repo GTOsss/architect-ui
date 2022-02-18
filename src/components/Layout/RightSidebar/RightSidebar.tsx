@@ -1,11 +1,9 @@
 import React from 'react';
-import { fabric } from 'fabric';
 import cx from 'clsx';
 import s from './RightSidebar.module.scss';
 import { loadFromJSON } from '@store/fabric/canvasJSON';
 import { loadFromAtom } from '@store/fabric/sourceMapCanvas';
 import { saveCanvas } from '@store/fabric/sourceMapCanvas';
-
 interface IRightSidebar {
   atomMap: any;
   moduleMap: any;
@@ -13,7 +11,7 @@ interface IRightSidebar {
   json: JSON;
 }
 
-const RightSidebar = ({ atomMap, moduleMap, canvasJSON, json }) => {
+const RightSidebar: React.FC<IRightSidebar> = ({ atomMap, moduleMap, canvasJSON, json }) => {
   const events = { loadFromJSON, loadFromAtom, saveCanvas };
   const handleLoadFromJSON = () => {
     canvasJSON.clear();

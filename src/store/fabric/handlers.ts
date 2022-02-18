@@ -1,8 +1,6 @@
 import { createEffect, createEvent, createStore, sample } from '@store/rootDomain';
 import { Circle } from 'fabric/fabric-impl';
 import { RemoveActivePort } from 'src/ts';
-import { $canvas, $canvasJSON } from './canvasJSON';
-import { $tab } from './tab';
 
 export const setActivePort = createEvent<Circle>();
 export const removeActivePort = createEvent<RemoveActivePort>();
@@ -170,8 +168,3 @@ export const makeConnectionFx = createEffect(async ({ activePort, item, arrowSty
     item.set({ strokeWidth: 2, stroke: 'black' });
   }
 });
-
-// sample({
-//   clock: $tab,
-//   target: removeActivePort,
-// })

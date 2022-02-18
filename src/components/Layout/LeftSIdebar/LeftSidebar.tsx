@@ -2,9 +2,7 @@ import React from 'react';
 import cx from 'clsx';
 import { useStore } from 'effector-react';
 import { $arrowStyle, $connectionsMode, setArrowStyle, setConnectionsMode } from '@store/fabric/canvasModes';
-import Arrow from '../../../assets/icons/arrow.svg';
 import s from './LeftSidebar.module.scss';
-
 interface ILeftSidebar {
   setModal: (string) => void;
 }

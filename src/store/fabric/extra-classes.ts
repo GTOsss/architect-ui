@@ -1,7 +1,11 @@
+// @ts-nocheck
 import { createEffect, createEvent, sample } from '../rootDomain';
 import { fabric } from 'fabric';
+import fabricTypes from 'fabric/fabric-impl';
 
-export const addLineArrowFx = createEffect(async () => {
+export const initExtraClasses = createEvent();
+
+const addLineArrowFx = createEffect(async () => {
   fabric.LineArrow = fabric.util.createClass(fabric.Line, {
     type: 'lineArrow',
 
@@ -44,4 +48,9 @@ export const addLineArrowFx = createEffect(async () => {
   };
 
   fabric.LineArrow.async = true;
+});
+
+sample({
+  clock: initExtraClasses,
+  target: [addLineArrowFx],
 });

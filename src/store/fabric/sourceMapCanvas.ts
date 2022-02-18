@@ -1,17 +1,22 @@
 import { fabric } from 'fabric';
 import { createEffect, createEvent, createStore, sample } from '@store/rootDomain';
-import { $atomMap, $moduleMap, getAtomMapFx, getModuleMapFx } from '@store/sourceMaps';
+import { getAtomMapFx, getModuleMapFx } from '@store/sourceMaps';
 import { makeAtomComponent, makeModuleComponent } from '../../utils/makeComponent';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx } from './handlers';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
 import { Canvas } from 'fabric/fabric-impl';
 import { fsApi } from '@store/fsApi';
 
+// events
+
 const makeConnection = createEvent<fabric.Circle>();
 const onWheel = createEvent();
 const mouseDown = createEvent();
-
 export const saveCanvas = createEvent();
+export const loadFromAtom = createEvent();
+
+// effects
+
 const sendCanvasFx = createEffect(async (canvas) => {
   const result = await fsApi.post({
     endpoint: '/canvas',
@@ -20,7 +25,6 @@ const sendCanvasFx = createEffect(async (canvas) => {
   return result;
 });
 
-export const loadFromAtom = createEvent();
 export const loadFromAtomFx = createEffect(async ({ map, canvas }) => {
    try {
      let previousBottom = 150;
@@ -61,7 +65,11 @@ export const initMapCanvasFx = createEffect(async () => {
   return canvas;
 });
 
+// stores
+
 export const $sourceMapCanvas = createStore<Canvas>(null).on(initMapCanvasFx.doneData, (_, canvas) => canvas);
+
+// samples and etc.
 
 sample({
   clock: initMapCanvasFx.doneData,
@@ -80,20 +88,12 @@ sample({
   target: getModuleMapFx,
 })
 
-// sample({
-//   source: $sourceMapCanvas,
-//   clock: getModuleMapFx.doneData,
-//   fn: (canvas, moduleMap) => ({ map: moduleMap.map, canvas }),
-//   target: loadFromModuleFx,
-// });
-
 sample({
   source: { activePort: $activePort, arrowStyle: $arrowStyle, connectionMode: $connectionsMode, canvas: $sourceMapCanvas },
   clock: makeConnection,
   fn: (source, item) => ({ ...source, item }),
   target: makeConnectionFx,
 });
-
 
 sample({
   source: $sourceMapCanvas,

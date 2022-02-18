@@ -2,16 +2,19 @@ import { fabric } from 'fabric';
 import { fsApi } from '@store/fsApi';
 import { createEffect, createStore, createEvent, sample, guard } from '../rootDomain';
 import { Canvas, IEvent } from 'fabric/fabric-impl';
-import { addLineArrowFx } from './extra-classes';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx, setActivePort } from './handlers';
 
+// events
+
 export const loadFromJSON = createEvent();
 const onWheel = createEvent<IEvent>();
-const mouseDown = createEvent<IEvent>(); 
+const mouseDown = createEvent<IEvent>();
+const makeConnection = createEvent();
+
+// effects
 
 export const initCanvasJSONFx = createEffect(async () => {
-  addLineArrowFx(); // initialize custom class LineArrow
   const canvas = new fabric.Canvas('canvas');
   canvas.on('object:moving', moveLineFx);
   canvas.on('mouse:wheel', onWheel);
@@ -19,8 +22,6 @@ export const initCanvasJSONFx = createEffect(async () => {
 
   return canvas;
 });
-
-const makeConnection = createEvent();
 
 export const $canvasJSON = createStore<Canvas>(null).on(initCanvasJSONFx.doneData, (_, data) => data);
 
@@ -118,17 +119,16 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
   } catch (error) {
     console.log(error);
   }
-  canvas.on('object:moving', moveLineFx);
-  canvas.on('mouse:wheel', onWheel);
   return;
 });
 
-export const getJSONFx = createEffect(async () => {
-  const result = await fsApi.get('/canvas');
-  return result;
-});
+export const getJSONFx = createEffect(async () =>  await fsApi.get('/canvas'));
+
+// stores
 
 export const $JSON = createStore(null).on(getJSONFx.doneData, (_, json) => json);
+
+// samples and etc.
 
 sample({
   source: $canvasJSON,
