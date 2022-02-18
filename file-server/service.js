@@ -78,6 +78,12 @@ class FileService {
       return error;
     }
   }
+
+  getTemplates() {
+    const templates = getObjectWithPaths(configPath.templatesPath || '');
+    const templateMap = parseFiles(templates);
+    return Object.keys(templateMap);
+  }
 }
 
 module.exports = new FileService();

@@ -7,6 +7,7 @@ const {{toCamelCase(name)}} = ({}: IProps) => {
   return (
     <div className={styles.root}>
       <h1>{{toCamelCase(name)}}</h1>
+      {{param}}
     </div>
   );
 };

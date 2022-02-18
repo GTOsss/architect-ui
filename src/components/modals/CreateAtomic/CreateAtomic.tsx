@@ -5,6 +5,7 @@ import { useEvent, useStore } from 'effector-react';
 import { setModal } from '@store/modals';
 import { $atomMap } from '@store/sourceMaps';
 import s from './CreateAtomic.module.scss';
+import { $templates } from '@store/fabric/templates';
 
 // const atomMap = require(`${process.env.DIRNAME}/architect/source_map/source-map-atom`);
 
@@ -18,9 +19,10 @@ const CreateAtomic: React.FC<ICreateAtomic> = React.forwardRef(({ isOpen, onClic
   const [name, setName] = useState('');
   const [path, setPath] = useState('');
   const [rPath, setRPath] = useState('');
-  const [pathType, setPathType] = useState('off');
+  const [pathType, setPathType] = useState('default');
   const [componentType, setComponentType] = useState('');
   const atomMap = useStore($atomMap);
+  const templates = useStore($templates);
 
   const events = useEvent({ setModal });
 
@@ -67,18 +69,18 @@ const CreateAtomic: React.FC<ICreateAtomic> = React.forwardRef(({ isOpen, onClic
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Component name" />
         <div className={s.RadioGroup}>
           <span>Set the: </span>
+          <input
+            type="radio"
+            name="path"
+            id="default"
+            onChange={(e) => setPathType(e.target.id)}
+            checked={pathType === 'default'}
+          />
+          <label htmlFor="relative">default</label>
           <input type="radio" name="path" id="absolute" onChange={(e) => setPathType(e.target.id)} />
           <label htmlFor="absolute">absolute path</label>
           <input type="radio" name="path" id="relative" onChange={(e) => setPathType(e.target.id)} />
           <label htmlFor="relative">relative path</label>
-          <input
-            type="radio"
-            name="path"
-            id="off"
-            onChange={(e) => setPathType(e.target.id)}
-            checked={pathType === 'off'}
-          />
-          <label htmlFor="relative">off</label>
         </div>
         {pathType === 'absolute' && (
           <input

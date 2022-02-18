@@ -100,4 +100,14 @@ router.get('/canvas', (req, res) => {
     res.status(500).send(error)};
 })
 
+router.get('/templates', async (req, res) => {
+  try {
+    const templates = FileService.getTemplates();
+    res.status(200).send(templates);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+})
+
 module.exports = router;
