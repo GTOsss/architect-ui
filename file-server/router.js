@@ -2,6 +2,8 @@ const Router = require('express').Router;
 const prettier = require('prettier');
 const FileService = require('./service');
 const fs = require('fs');
+const { atomSourceToText, getItemPaths } = require('./service');
+const projectPath = process.cwd();
 
 const router = new Router();
 
@@ -43,7 +45,6 @@ router.get('/config', (req, res) => {
 
 router.get('/path', (req, res) => {
   try {
-    const projectPath = process.cwd();
     res.send(projectPath);
   } catch (error) {
     console.log(error);
@@ -53,7 +54,6 @@ router.get('/path', (req, res) => {
 
 router.post('/atom', (req, res) => {
   try {
-    const projectPath = process.cwd();
     fs.writeFileSync(`${projectPath}/architect/source_map/source-map-atom.js`, req.body.data);
   } catch (error) {
     console.log(error);
@@ -63,7 +63,6 @@ router.post('/atom', (req, res) => {
 
 router.post('/module', (req, res) => {
   try {
-    const projectPath = process.cwd();
     const newFile = prettier.format(req.body.data, {
       semi: true,
       trailingComma: 'all',
@@ -81,9 +80,27 @@ router.post('/module', (req, res) => {
   }
 });
 
+router.put('/source-map/atom/:group', (req, res) => {
+  try {
+    const { group } = req.params;
+    const atomMap = require(`${projectPath}/architect/source_map/source-map-atom`);
+
+    const newAtomMap = JSON.parse(JSON.stringify(atomMap));
+    newAtomMap.map[group] = [...newAtomMap.map?.[group], req.body.data];
+
+    const textFile = atomSourceToText(newAtomMap);
+    fs.writeFileSync(`${projectPath}/architect/source_map/source-map-atom.js`, textFile);
+
+    const paths = getItemPaths(group, req.body.data);
+    res.status(200).send(paths);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+})
+
 router.post('/canvas', (req, res) => {
   try {
-    const projectPath = process.cwd();
     fs.writeFileSync(`${projectPath}/architect/canvas/canvas.json`, JSON.stringify(req.body.data))
     res.sendStatus(200);
   } catch (error) {
@@ -93,7 +110,6 @@ router.post('/canvas', (req, res) => {
 
 router.get('/canvas', (req, res) => {
   try {
-    const projectPath = process.cwd();
     const canvas = fs.readFileSync(`${projectPath}/architect/canvas/canvas.json`);
     res.status(200).send(JSON.stringify(JSON.parse(canvas)));
   } catch (error) {

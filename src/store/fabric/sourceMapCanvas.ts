@@ -1,11 +1,11 @@
 import { fabric } from 'fabric';
 import { createEffect, createEvent, createStore, sample } from '@store/rootDomain';
 import { getAtomMapFx, getModuleMapFx } from '@store/sourceMaps';
+import { Canvas } from 'fabric/fabric-impl';
+import { fsApi } from '@store/fsApi';
 import { makeAtomComponent, makeModuleComponent } from '../../utils/makeComponent';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx } from './handlers';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
-import { Canvas } from 'fabric/fabric-impl';
-import { fsApi } from '@store/fsApi';
 
 // events
 
@@ -25,21 +25,27 @@ const sendCanvasFx = createEffect(async (canvas) => {
   return result;
 });
 
-export const loadFromAtomFx = createEffect(async ({ map, canvas }) => {
-   try {
-     let previousBottom = 150;
-     console.log(map)
-     Object.entries(map).forEach((element, index) => {
-       const component = makeAtomComponent(element as any, makeConnection, index, previousBottom);
+export const loadFromAtomFx = createEffect(async ({ atomMap, canvas }) => {
+  try {
+    const { map, defaultParams, aliases } = atomMap;
+    const previousBottom = 150;
+    Object.entries(map).forEach((element, index) => {
+      const component = makeAtomComponent(
+        element as any,
+        makeConnection,
+        index,
+        previousBottom,
+        defaultParams,
+        aliases,
+      );
       //  previousBottom = component.top + component.height;
-       canvas.add(component);
-     });
-     canvas.renderAll();
-
-   } catch (error) {
-     console.log(error)
-   }
-})
+      canvas.add(component);
+    });
+    canvas.renderAll();
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export const loadFromModuleFx = createEffect(async ({ map, canvas }) => {
   try {
@@ -49,7 +55,7 @@ export const loadFromModuleFx = createEffect(async ({ map, canvas }) => {
         const component = makeModuleComponent(element, makeConnection, index, groupIndex, previousBottom);
         previousBottom = component.top + component.height;
         canvas.add(component);
-      })
+      });
     });
     canvas.renderAll();
   } catch (error) {
@@ -79,17 +85,22 @@ sample({
 sample({
   source: $sourceMapCanvas,
   clock: getAtomMapFx.doneData,
-  fn: (canvas, atomMap) => ({ map: atomMap.map, canvas }),
+  fn: (canvas, atomMap) => ({ atomMap, canvas }),
   target: loadFromAtomFx,
 });
 
 sample({
   clock: loadFromAtomFx.doneData,
   target: getModuleMapFx,
-})
+});
 
 sample({
-  source: { activePort: $activePort, arrowStyle: $arrowStyle, connectionMode: $connectionsMode, canvas: $sourceMapCanvas },
+  source: {
+    activePort: $activePort,
+    arrowStyle: $arrowStyle,
+    connectionMode: $connectionsMode,
+    canvas: $sourceMapCanvas,
+  },
   clock: makeConnection,
   fn: (source, item) => ({ ...source, item }),
   target: makeConnectionFx,

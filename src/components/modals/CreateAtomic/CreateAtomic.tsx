@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, Ref, useEffect, useState } from 'react';
-import cn from 'clsx';
+import cx from 'clsx';
 import axios from 'axios';
 import { useEvent, useStore } from 'effector-react';
 import { setModal } from '@store/modals';
@@ -59,11 +59,11 @@ const CreateAtomic: React.FC<ICreateAtomic> = React.forwardRef(({ isOpen, onClic
     axios.post('http://localhost:9999/atom', {
       data,
     });
-    events.setModal('createAtomic');
+    events.setModal({ name: 'createAtomic' });
   };
 
   return (
-    <div className={cn(s.root, { [s.isOpen]: isOpen })} onClick={onClick}>
+    <div className={cx(s.root, { [s.isOpen]: isOpen })} onClick={onClick}>
       <form className={s.Form} onSubmit={handleSubmit} ref={ref}>
         <h2>Add atomic component</h2>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Component name" />

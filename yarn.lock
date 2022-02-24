@@ -4006,10 +4006,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-effector-react-form@^2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/effector-react-form/-/effector-react-form-2.2.6.tgz#050d7406ff098ab5a1b1082072d7794b21cb5167"
-  integrity sha512-wVnf4PHUWvq5ql3TqCS8cCw9M4nDKj734LJ/pLVuebANgFljBqTbXz/t31q9qFnwrGs4BfV2JDoMfiUlftJzbw==
+effector-react-form@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/effector-react-form/-/effector-react-form-2.2.7.tgz#d1fa069a36925c855ed122fd261f845da922ba96"
+  integrity sha512-MXrkOW/a7xt2PaaBZZ1PVvoGPaCuEj5MYbLgDsG025Qeq3WqyogHiagKR8g5bdrS06DMOktkezIX97FyfJRLMw==
   dependencies:
     lodash.topath "^4.5.2"
 

@@ -12,7 +12,8 @@
         "@styles": "./src/styles",
         "@assets": "./src/assets",
         "@components": "./src/components",
-        "@view": "./src/view"
+        "@view": "./src/view",
+        "@utils/*": "./src/utils"
       }
     }],
     "@babel/plugin-proposal-class-properties"

@@ -1,13 +1,34 @@
 import { createEvent, createStore } from './rootDomain';
 
-const initialState = {
-  createAtomic: false,
-  createModule: false,
+type SetModal = {
+  name: string;
+  additionalData?: any;
 };
 
-export const setModal = createEvent<string>();
+const initialState = {
+  createAtomic: {
+    isOpen: false,
+  },
+  createModule: {
+    isOpen: false,
+  },
+  addAtomItem: {
+    isOpen: false,
+    additionalData: null,
+  },
+};
 
-export const $modals = createStore(initialState).on(setModal, (state, modal: string) => ({
-  ...state,
-  [modal]: !state[modal],
-}));
+export const setModal = createEvent<SetModal>();
+
+export const $modals = createStore(initialState).on(setModal, (state, modal) => {
+  const { name, ...rest } = modal;
+  return {
+    ...state,
+    [name]: {
+      isOpen: !state[name].isOpen,
+      ...rest,
+    },
+  };
+});
+
+$modals.watch((value) => console.log(value));

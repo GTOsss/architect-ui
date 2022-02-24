@@ -1,4 +1,5 @@
 import { openFileInIdeaFx } from '@store/ideaApi';
+import { setModal } from '@store/modals';
 import { Event } from 'effector';
 import { fabric } from 'fabric';
 
@@ -51,7 +52,6 @@ export const makeAtomComponent = (
   let prevBottom = 38;
 
   const atoms = components.map((item) => {
-    console.log(item);
     const { blocks } = item[1];
 
     const rectHeigh = 82 + 19 * blocks.length + 5;
@@ -103,9 +103,8 @@ export const makeAtomComponent = (
       fill: 'rgb(118, 128, 142)',
     });
 
-    const blocksTexts = blocks.map((el, index) => {
-      // console.log(el, item[1]);
-      let url = item[1].configOutput + '/';
+    const blocksTexts = blocks.map((el, i) => {
+      let url = `${item[1].configOutput}/`;
       if (item[1].defaultPath) {
         url += item[1].defaultPath;
       }
@@ -113,17 +112,17 @@ export const makeAtomComponent = (
         url += item[1].rPath;
       }
       url += el;
-        const blockText = new fabric.Text(el.slice(1), {
-          top: 46 + 19 * index,
-          left: 4,
-          fill: 'rgb(0, 71, 177)',
-          fontSize: 14,
-          hoverCursor: 'pointer',
-          underline: true,
-          name: `link?${url}`,
-        });
+      const blockText = new fabric.Text(el.slice(1), {
+        top: 46 + 19 * i,
+        left: 4,
+        fill: 'rgb(0, 71, 177)',
+        fontSize: 14,
+        hoverCursor: 'pointer',
+        underline: true,
+        name: `link?${url}`,
+      });
 
-      blockText.on('mousedown', () => openFileInIdeaFx(url))
+      blockText.on('mousedown', () => openFileInIdeaFx(url));
 
       return blockText;
     });
@@ -163,7 +162,7 @@ export const makeAtomComponent = (
       hoverCursor: 'pointer',
     });
 
-    openFolder.on('mousedown', () => openFileInIdeaFx('src/store/fabric/fabricdev.ts'))
+    openFolder.on('mousedown', () => openFileInIdeaFx('src/store/fabric/fabric.ts'));
 
     const atomGroup = new fabric.Group(
       [rect1, text1, text2, text3, text4, rect2, ...blocksTexts, pathTitle, pathText, rPathText, openFolder],
@@ -235,7 +234,7 @@ export const makeAtomComponent = (
     rx: 5,
     ry: 5,
     fill: 'rgb(167, 183, 205)',
-  })
+  });
 
   const addItemText = new fabric.Text('add item', {
     originX: 'center',
@@ -244,7 +243,7 @@ export const makeAtomComponent = (
     left: 35,
     fontSize: 12,
     fill: 'black',
-  })
+  });
 
   const addItem = new fabric.Group([addItemRect, addItemText], {
     originY: 'bottom',
@@ -260,6 +259,8 @@ export const makeAtomComponent = (
     subTargetCheck: true,
   });
 
+  addItem.on('mousedown', () => setModal({ name: 'addAtomItem', additionalData: { elementName: name, group } }));
+
   return group;
 };
 
@@ -270,7 +271,6 @@ export const makeModuleComponent = (
   groupIndex: number,
   previousBottom: null | number,
 ) => {
-  // console.log(element)
   const [name, type] = element;
   const boxWidth = 180;
   const boxHeight = 124;
@@ -396,7 +396,7 @@ export const makeModuleComponent = (
     hoverCursor: 'pointer',
   });
 
-  button.on('mousedown', () => console.log('asd'));
+  button.on('mousedown', () => console.log('Add module item handler doesn`t defined'));
 
   const groupData = new fabric.Group([rectData, typeTitle, typeText, pathTitle, path, button], {
     top: 34,

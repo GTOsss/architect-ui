@@ -1,0 +1,74 @@
+.root {
+  position: relative;
+  margin-bottom: 15px;
+  z-index: 1;
+}
+
+.OptionsList {
+  display: none;
+  list-style-type: none;
+
+  position: absolute;
+  top: calc(100% + 15px);
+  left: 0;
+
+  background: white;
+  box-shadow: 0px 0px 5px rgb(102, 102, 102);
+
+  padding: 10px 0;
+
+  border-radius: 15px;
+  width: 100%;
+
+  & > li {
+    font-size: 16px;
+    height: 20px;
+    padding: 0 10px 10px;
+
+    & > button {
+      width: 100%;
+
+      background: none;
+      border: none;
+      outline: none;
+
+      text-align: start;
+    }
+
+    &:hover {
+      background: rgb(201, 201, 201);
+    }
+  }
+}
+
+.OptionsList.isOpen {
+  display: block;
+}
+
+.Trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  border: none;
+  background: none;
+  outline: none;
+
+  width: 100%;
+  height: 25px;
+
+  & > svg {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 25px;
+    transition: 0.2s ease-in;
+  }
+}
+
+.Trigger.isOpen {
+  & > svg {
+    transform: rotate(180deg) translateY(50%);
+  }
+}

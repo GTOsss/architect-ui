@@ -13,7 +13,13 @@ const postFx = createEffect<any>(async ({ endpoint, data }) => {
   return result.data;
 });
 
+const putFx = createEffect<any>(async ({ endpoint, data }) => {
+  const result = await axios.put(host + endpoint, { data });
+  return result.data;
+});
+
 export const fsApi = {
   get: getFx,
   post: postFx,
+  put: putFx,
 };

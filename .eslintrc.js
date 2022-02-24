@@ -23,8 +23,6 @@ module.exports = {
       'error',
       {
         ignore: tsPaths,
-        "prefer": "type-imports",
-        "disallowTypeAnnotations": false
       },
     ],
     '@typescript-eslint/lines-between-class-members': 'off',
