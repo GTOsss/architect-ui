@@ -83,7 +83,7 @@ const AddAtomItem: React.FC<IAddAtomItem> = React.forwardRef(({ isOpen, onClick,
               <button onClick={() => events.prevStep()} className={s.FormButton}>
                 Prev step
               </button>
-              <button onClick={submitValues} type="submit" className={s.FormButton}>
+              <button type="submit" className={s.FormButton}>
                 Submit
               </button>
             </div>

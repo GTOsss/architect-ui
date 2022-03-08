@@ -3,9 +3,18 @@ import { fsApi } from './fsApi';
 
 // effects
 
-export const getAtomMapFx = createEffect(async () => await fsApi.get('/source-map/atom'));
-export const getModuleMapFx = createEffect(async () => await fsApi.get('/source-map/module'));
-export const getConfigFx = createEffect(async () => await fsApi.get('/config'));
+export const getAtomMapFx = createEffect(async () => {
+  const result = await fsApi.get('/source-map/atom');
+  return result;
+});
+export const getModuleMapFx = createEffect(async () => {
+  const result = await fsApi.get('/source-map/module');
+  return result;
+});
+export const getConfigFx = createEffect(async () => {
+  const result = await fsApi.get('/config');
+  return result;
+});
 
 // stores
 

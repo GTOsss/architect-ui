@@ -1,8 +1,9 @@
 import { $sourceMapCanvas } from '@store/fabric/sourceMapCanvas';
 import { fsApi } from '@store/fsApi';
 import { openFileInIdeaFx } from '@store/ideaApi';
+import { $modals, setModal } from '@store/modals';
 import { createEvent, createStore, combine, sample } from '@store/rootDomain';
-import { $atomMap } from '@store/sourceMaps';
+import { $atomMap, $config } from '@store/sourceMaps';
 import { createEffect } from 'effector';
 import { createForm } from 'effector-react-form';
 import { fabric } from 'fabric';
@@ -51,7 +52,9 @@ export const optionsForm = createForm({
 
 export const valuesForm = createForm({
   initialValues,
-  onSubmit: () => sendData(),
+  onSubmit: () => {
+    sendData();
+  },
 });
 
 export const $step = createStore(0)
@@ -70,9 +73,25 @@ sample({
   target: putAtomItemFx,
 });
 
-const addToGroupFx = createEffect(async ({ defaultParams, options, values, meta, blocks, canvas }) => {
-  console.log(defaultParams, meta, blocks, options, values);
-
+const addToGroupFx = createEffect(async ({ defaultParams, options, values, meta, blocks, output, canvas }) => {
+  console.log(
+    'defaultParams: ',
+    defaultParams,
+    '\n',
+    'options: ',
+    options,
+    '\n',
+    'meta: ',
+    meta,
+    '\n',
+    'blocks: ',
+    blocks,
+    '\n',
+    'output: ',
+    output,
+    'values: ',
+    values,
+  );
   const rectHeigh = 82 + 19 * blocks.length + 5;
   const boxWidth = 300;
 
@@ -124,14 +143,20 @@ const addToGroupFx = createEffect(async ({ defaultParams, options, values, meta,
   });
 
   const blocksTexts = blocks.map((el, i) => {
-    let url = `$src/`;
-    // if (item[1].defaultPath) {
-    //   url += item[1].defaultPath;
-    // }
-    // if (item[1].rPath) {
-    //   url += item[1].rPath;
-    // }
-    url += el;
+    let url = '';
+    if (output && options.path !== 'absolute') {
+      url +=
+        options.path === 'default'
+          ? `${output}/${defaultParams[options.template].path}`
+          : `${output}/${defaultParams[options.template].path}/${values.relative_path}`;
+    } else if (options.path === 'relative') {
+      url += `${defaultParams[options.template]}/${values.relative_path}`;
+    } else if (options.path === 'absolute') {
+      url += values.absolute_path;
+    } else {
+      url += defaultParams[options.template].path;
+    }
+    url += el.slice(0);
     const blockText = new fabric.Text(el.slice(1), {
       top: 46 + 19 * i,
       left: 4,
@@ -155,20 +180,12 @@ const addToGroupFx = createEffect(async ({ defaultParams, options, values, meta,
     fill: 'black',
   });
 
-  const pathText = new fabric.Text(`${defaultParams[options.template]}`, {
+  const pathText = new fabric.Text(`${defaultParams[options.template].path}`, {
     originY: 'bottom',
     top: rectHeigh - 4,
     left: 4,
     fontSize: 14,
     fill: 'white',
-  });
-
-  const rPathText = new fabric.Text(values.relative_path ? values.relative_path : '', {
-    originY: 'bottom',
-    top: rectHeigh - 4,
-    left: 4 + pathText.width,
-    fontSize: 14,
-    fill: 'black',
   });
 
   const openFolder = new fabric.Text('Open folder', {
@@ -184,31 +201,93 @@ const addToGroupFx = createEffect(async ({ defaultParams, options, values, meta,
 
   openFolder.on('mousedown', () => openFileInIdeaFx('src/store/fabric/fabric.ts'));
 
+  const { group } = meta;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { _objects } = group;
+
+  const rootRect = _objects.find((item) => item.name === 'rootRect');
+  const addItem = _objects.find((item) => item.name === 'addItem');
+  const port2 = _objects.find((item) => item.name === 'port2');
+  const port3 = _objects.find((item) => item.name === 'port3');
+  const port4 = _objects.find((item) => item.name === 'port4');
+
   const atomGroup = new fabric.Group(
-    [rect1, text1, text2, text3, text4, rect2, ...blocksTexts, pathTitle, pathText, rPathText, openFolder],
+    [rect1, text1, text2, text3, text4, rect2, ...blocksTexts, pathTitle, pathText, openFolder],
     {
-      originY: 'top',
-      top: 0,
-      left: 0,
+      top: group.top + group.height - addItem.height - 10,
+      left: group.left + 15, // 10 is group padding and 5 is left port`s offset
       subTargetCheck: true,
     },
   );
-  meta.group.add(atomGroup);
-  canvas.renderAll();
 
-  // prevBottom += atomGroup.height + 20;
+  if (values.absolute_path) {
+    const absPath = new fabric.Text(`${values.absolute_path}`, {
+      originY: 'bottom',
+      top: atomGroup.top + atomGroup.height - 5,
+      left: atomGroup.left + 4,
+      fontSize: 14,
+      fill: 'black',
+    });
+
+    atomGroup.remove(pathText);
+    atomGroup.addWithUpdate(absPath);
+  }
+
+  if (values.relative_path) {
+    const rPathText = new fabric.Text(`/${values.relative_path}`, {
+      originY: 'bottom',
+      top: atomGroup.top + atomGroup.height - 5,
+      left: atomGroup.left + pathText.width + 4,
+      fontSize: 14,
+      fill: 'black',
+    });
+
+    atomGroup.addWithUpdate(rPathText);
+  }
+  addItem.top += atomGroup.height + 20;
+  rootRect.height += atomGroup.height + 20;
+
+  port2.top += atomGroup.height / 2 + 10;
+  port3.top += atomGroup.height + 20;
+  port4.top += atomGroup.height / 2 + 10;
+
+  group.addWithUpdate(atomGroup);
+  canvas.renderAll();
+  return {};
 });
 
 sample({
-  source: { atomMap: $atomMap, canvas: $sourceMapCanvas },
+  source: { atomMap: $atomMap, canvas: $sourceMapCanvas, config: $config },
   clock: putAtomItemFx.done,
-  fn: ({ atomMap: { defaultParams }, canvas }, { params, result }) => ({
+  fn: ({ atomMap: { defaultParams }, config: { output }, canvas }, { params, result }) => ({
     defaultParams,
     options: params.options,
     values: params.values,
     meta: params.valuesMeta,
     blocks: result,
-    canvas
+    output,
+    canvas,
   }),
   target: addToGroupFx,
+});
+
+sample({
+  clock: addToGroupFx.done,
+  fn: () => ({
+    name: 'addAtomItem',
+    additionalData: null,
+  }),
+  target: setModal,
+});
+
+sample({
+  clock: addToGroupFx.doneData,
+  fn: () => initialValues,
+  target: valuesForm.$values,
+});
+
+sample({
+  clock: addToGroupFx.doneData,
+  fn: () => initialOptions,
+  target: optionsForm.$values,
 });

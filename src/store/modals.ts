@@ -25,6 +25,7 @@ export const $modals = createStore(initialState).on(setModal, (state, modal) => 
   return {
     ...state,
     [name]: {
+      ...state[name],
       isOpen: !state[name].isOpen,
       ...rest,
     },

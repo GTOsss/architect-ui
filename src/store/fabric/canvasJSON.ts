@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { fsApi } from '@store/fsApi';
-import { createEffect, createStore, createEvent, sample, guard } from '../rootDomain';
 import { Canvas, IEvent } from 'fabric/fabric-impl';
+import { createEffect, createStore, createEvent, sample, guard } from '../rootDomain';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx, setActivePort } from './handlers';
 
@@ -109,7 +109,7 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
         // function that fires during canvas deserialization for each object
         if (object.type === 'group') {
           object._objects.forEach((item) => {
-            if (item.name === 'port') {
+            if (item.name?.startsWith('port')) {
               item.on('mousedown', () => makeConnection(item));
             }
           });
@@ -119,10 +119,9 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
   } catch (error) {
     console.log(error);
   }
-  return;
 });
 
-export const getJSONFx = createEffect(async () =>  await fsApi.get('/canvas'));
+export const getJSONFx = createEffect(async () => fsApi.get('/canvas'));
 
 // stores
 
@@ -142,7 +141,7 @@ sample({
   clock: mouseDown,
   fn: ({ activePort, canvas }, event) => ({ activePort, canvas, event }),
   target: mouseDownFx,
-})
+});
 
 sample({
   clock: initCanvasJSONFx.doneData,
@@ -157,8 +156,8 @@ guard({
 });
 
 sample({
-  source: { activePort: $activePort, arrowStyle: $arrowStyle, connectionMode: $connectionsMode, canvas: $canvasJSON},
+  source: { activePort: $activePort, arrowStyle: $arrowStyle, connectionMode: $connectionsMode, canvas: $canvasJSON },
   clock: makeConnection,
   fn: (source, item) => ({ ...source, item }),
-  target: makeConnectionFx, 
-})
+  target: makeConnectionFx,
+});

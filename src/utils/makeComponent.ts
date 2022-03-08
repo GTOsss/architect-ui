@@ -38,6 +38,7 @@ export const makeAtomComponent = (
     fill: 'rgb(33, 38, 46)',
     rx: 10, // horizontal border radius
     ry: 10, // vertical border radius
+    name: 'rootRect',
   });
 
   const nameTitle = new fabric.Text(name, {
@@ -184,7 +185,7 @@ export const makeAtomComponent = (
     stroke: 'gray',
     left: boxWidth / 2 - 5,
     top: -5,
-    name: 'port',
+    name: 'port1',
     hoverCursor: 'pointer',
   });
 
@@ -196,7 +197,7 @@ export const makeAtomComponent = (
     stroke: 'gray',
     left: boxWidth - 5,
     top: boxHeight / 2 - 5,
-    name: 'port',
+    name: 'port2',
     hoverCursor: 'pointer',
   });
 
@@ -208,7 +209,7 @@ export const makeAtomComponent = (
     stroke: 'gray',
     left: boxWidth / 2 - 5,
     top: boxHeight - 5,
-    name: 'port',
+    name: 'port3',
     hoverCursor: 'pointer',
   });
 
@@ -220,7 +221,7 @@ export const makeAtomComponent = (
     stroke: 'gray',
     left: -5,
     top: boxHeight / 2 - 5,
-    name: 'port',
+    name: 'port4',
     hoverCursor: 'pointer',
   });
 
@@ -250,6 +251,7 @@ export const makeAtomComponent = (
     top: boxHeight - 10,
     left: 10,
     hoverCursor: 'pointer',
+    name: 'addItem',
   });
 
   const group = new fabric.Group([rect, nameTitle, ...atoms, port1, port2, port3, port4, addItem], {
@@ -411,7 +413,7 @@ export const makeModuleComponent = (
     subTargetCheck: true,
     hasControls: false,
   });
-  // group.hoverCursor = 'pointer';
 
   return group;
 };
+;
