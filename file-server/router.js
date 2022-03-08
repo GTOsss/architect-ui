@@ -89,7 +89,7 @@ router.put('/source-map/atom/:group', (req, res) => {
     newAtomMap.map[group] = [...newAtomMap.map?.[group], req.body.data];
 
     const textFile = atomSourceToText(newAtomMap);
-    // fs.writeFileSync(`${projectPath}/architect/source_map/source-map-atom.js`, textFile);
+    fs.writeFileSync(`${projectPath}/architect/source_map/source-map-atom.js`, textFile);
 
     const paths = getItemPaths(group, req.body.data);
     res.status(200).send(paths);

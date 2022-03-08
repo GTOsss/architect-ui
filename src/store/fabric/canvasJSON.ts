@@ -31,16 +31,16 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
       json,
       () => {
         // function that fires after canvas was deserialized
-        canvas._objects.forEach((object) => {
+        canvas.getObjects().forEach((object) => {
           if (object.type === 'group') {
-            object._objects.forEach((item) => {
+            object.getObjects().forEach((item) => {
               if (item.name === 'port') {
                 const groupCenter = object.getCenterPoint();
                 const portCenter = item.getCenterPoint();
                 if (item.addChild) {
                   if (item.addChild.from && item.addChild.from[0]) {
                     item.addChild.from = item.addChild.from.map((ob) => {
-                      const line = canvas._objects.find((canvasItem) => {
+                      const line = canvas.getObjects().find((canvasItem) => {
                         if (canvasItem.isSetTo) {
                           return (
                             ob.x1 === canvasItem.x1 &&
@@ -70,7 +70,7 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
                   }
                   if (item.addChild.to && item.addChild.to[0]) {
                     item.addChild.to = item.addChild.to.map((ob) => {
-                      const line = canvas._objects.find((canvasItem) => {
+                      const line = canvas.getObjects().find((canvasItem) => {
                         if (canvasItem.isSetFrom) {
                           // if line already ahs been modified
                           return (
@@ -108,7 +108,7 @@ export const loadFromJSONFx = createEffect(async ({ json, canvas }: { json: any;
       (o, object) => {
         // function that fires during canvas deserialization for each object
         if (object.type === 'group') {
-          object._objects.forEach((item) => {
+          object.getObjects().forEach((item) => {
             if (item.name?.startsWith('port')) {
               item.on('mousedown', () => makeConnection(item));
             }

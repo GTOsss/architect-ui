@@ -203,13 +203,13 @@ const addToGroupFx = createEffect(async ({ defaultParams, options, values, meta,
 
   const { group } = meta;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { _objects } = group;
+  const objects = group.getObjects();
 
-  const rootRect = _objects.find((item) => item.name === 'rootRect');
-  const addItem = _objects.find((item) => item.name === 'addItem');
-  const port2 = _objects.find((item) => item.name === 'port2');
-  const port3 = _objects.find((item) => item.name === 'port3');
-  const port4 = _objects.find((item) => item.name === 'port4');
+  const rootRect = objects.find((item) => item.name === 'rootRect');
+  const addItem = objects.find((item) => item.name === 'addItem');
+  const port2 = objects.find((item) => item.name === 'port2');
+  const port3 = objects.find((item) => item.name === 'port3');
+  const port4 = objects.find((item) => item.name === 'port4');
 
   const atomGroup = new fabric.Group(
     [rect1, text1, text2, text3, text4, rect2, ...blocksTexts, pathTitle, pathText, openFolder],
