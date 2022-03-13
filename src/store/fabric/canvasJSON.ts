@@ -6,6 +6,7 @@ import { createEffect, createStore, createEvent, sample, guard } from '../rootDo
 import { $arrowStyle, $connectionsMode } from './canvasModes';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx } from './handlers';
 
+
 // events
 
 export const loadFromJSON = createEvent();

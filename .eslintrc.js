@@ -18,11 +18,18 @@ module.exports = {
     sourceType: 'module',
     project: ['./tsconfig.json'],
   },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ["d.ts", '.ts']
+      }
+    }
+  },
   rules: {
     'import/no-unresolved': [
       'error',
       {
-        ignore: tsPaths,
+        ignore: [...tsPaths, 'fabric/fabric-impl'],
       },
     ],
     '@typescript-eslint/lines-between-class-members': 'off',
