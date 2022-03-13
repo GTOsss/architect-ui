@@ -1,9 +1,10 @@
-import { fabric } from 'fabric';
+// import { fabric } from 'fabric';
 import { fsApi } from '@store/fsApi';
 import { Canvas, IEvent } from 'fabric/fabric-impl';
+import fabric from '../../fabricExtended';
 import { createEffect, createStore, createEvent, sample, guard } from '../rootDomain';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
-import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx, setActivePort } from './handlers';
+import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx } from './handlers';
 
 // events
 

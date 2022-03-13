@@ -1,7 +1,8 @@
 import { openFileInIdeaFx } from '@store/ideaApi';
 import { setModal } from '@store/modals';
 import { Event } from 'effector';
-import { fabric } from 'fabric';
+// import { fabric } from 'fabric';
+import fabric from '../fabricExtended';
 
 type Component = Array<
   string & {

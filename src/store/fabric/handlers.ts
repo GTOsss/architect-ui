@@ -1,6 +1,8 @@
 import { createEffect, createEvent, createStore } from '@store/rootDomain';
 import { Circle } from 'fabric/fabric-impl';
-import { fabric } from 'fabric';
+import fabric from '../../fabricExtended';
+// import { fabric } from 'fabric';
+
 import { RemoveActivePort } from '../../ts';
 
 export const setActivePort = createEvent<Circle>();
@@ -64,9 +66,7 @@ export const moveLineFx = createEffect(async (event) => {
   const objectCenter = object.getCenterPoint();
 
   if (object?.type === 'group') {
-    const ports = object
-      .getObjects()
-      .filter((item) => (item.name && item.name.slice(0, -1) === 'port') || item.name === 'port');
+    const ports = object.getObjects().filter((item) => item.name && item.name.startsWith('port'));
     ports.forEach((port) => {
       if (port.addChild) {
         const portCenter = port.getCenterPoint();

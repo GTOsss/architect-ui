@@ -6,7 +6,8 @@ import { createEvent, createStore, combine, sample } from '@store/rootDomain';
 import { $atomMap, $config } from '@store/sourceMaps';
 import { createEffect } from 'effector';
 import { createForm } from 'effector-react-form';
-import { fabric } from 'fabric';
+// import { fabric } from 'fabric';
+import fabric from '../../fabricExtended';
 
 const initialOptions = { path: 'default', template: '' };
 

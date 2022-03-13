@@ -1,8 +1,9 @@
-import { fabric } from 'fabric';
+// import { fabric } from 'fabric';
 import { createEffect, createEvent, createStore, sample } from '@store/rootDomain';
 import { getAtomMapFx, getModuleMapFx } from '@store/sourceMaps';
 import { Canvas } from 'fabric/fabric-impl';
 import { fsApi } from '@store/fsApi';
+import fabric from '../../fabricExtended';
 import { makeAtomComponent, makeModuleComponent } from '../../utils/makeComponent';
 import { $activePort, makeConnectionFx, mouseDownFx, moveLineFx, onWheelFx } from './handlers';
 import { $arrowStyle, $connectionsMode } from './canvasModes';
