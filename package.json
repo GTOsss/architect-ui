@@ -24,6 +24,7 @@
     "@svgr/webpack": "^6.2.1",
     "@types/fabric": "^4.5.7",
     "architect-project": "^2.0.4",
+    
     "axios": "^0.21.1",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",

@@ -1,7 +1,6 @@
 // @ts-nocheck
-import { createEffect, createEvent, sample } from '../rootDomain';
 import { fabric } from 'fabric';
-import fabricTypes from 'fabric/fabric-impl';
+import { createEffect, createEvent, sample } from '../rootDomain';
 
 export const initExtraClasses = createEvent();
 

@@ -27,17 +27,10 @@ const sendCanvasFx = createEffect(async (canvas) => {
 
 export const loadFromAtomFx = createEffect(async ({ atomMap, canvas }) => {
   try {
-    const { map, defaultParams, aliases } = atomMap;
+    const { map } = atomMap;
     const previousBottom = 150;
     Object.entries(map).forEach((element, index) => {
-      const component = makeAtomComponent(
-        element as any,
-        makeConnection,
-        index,
-        previousBottom,
-        defaultParams,
-        aliases,
-      );
+      const component = makeAtomComponent(element as any, makeConnection, index, previousBottom);
       //  previousBottom = component.top + component.height;
       canvas.add(component);
     });

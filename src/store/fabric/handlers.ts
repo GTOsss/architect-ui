@@ -1,23 +1,26 @@
-import { createEffect, createEvent, createStore, sample } from '@store/rootDomain';
+import { createEffect, createEvent, createStore } from '@store/rootDomain';
 import { Circle } from 'fabric/fabric-impl';
-import { RemoveActivePort } from 'src/ts';
+import { fabric } from 'fabric';
+import { RemoveActivePort } from '../../ts';
 
 export const setActivePort = createEvent<Circle>();
 export const removeActivePort = createEvent<RemoveActivePort>();
-export const $activePort = createStore<Circle | null>(null).on(setActivePort, (_, port) => port).on(removeActivePort, (port, data) => {
-  if (port) {
-    port.set({
-      strokeWidth: 1,
-      stroke: 'gray',
-    });
-    if (data.tab === 'JSON') {
-      data.sourceMapCanvas.renderAll()
-    } else {
-      data.canvasJSON.renderAll();
+export const $activePort = createStore<Circle | null>(null)
+  .on(setActivePort, (_, port) => port)
+  .on(removeActivePort, (port, data) => {
+    if (port) {
+      port.set({
+        strokeWidth: 1,
+        stroke: 'gray',
+      });
+      if (data.tab === 'JSON') {
+        data.sourceMapCanvas.renderAll();
+      } else {
+        data.canvasJSON.renderAll();
+      }
     }
-  }
-  return null;
-});
+    return null;
+  });
 
 export const onWheelFx = createEffect(async ({ canvas, event }) => {
   const { e } = event;
@@ -42,10 +45,9 @@ export const onWheelFx = createEffect(async ({ canvas, event }) => {
     canvas.setViewportTransform(newViewportTransform);
   }
 });
- 
+
 export const mouseDownFx = createEffect(async ({ activePort, canvas, event }) => {
   if (!event.subTargets.length) {
-    // disable active port
     if (activePort) {
       activePort.set({
         stroke: 'gray',
@@ -57,13 +59,14 @@ export const mouseDownFx = createEffect(async ({ activePort, canvas, event }) =>
   }
 });
 
-
 export const moveLineFx = createEffect(async (event) => {
   const object = event.target;
   const objectCenter = object.getCenterPoint();
 
   if (object?.type === 'group') {
-    const ports = object._objects.filter((item) => item.name === 'port');
+    const ports = object
+      .getObjects()
+      .filter((item) => (item.name && item.name.slice(0, -1) === 'port') || item.name === 'port');
     ports.forEach((port) => {
       if (port.addChild) {
         const portCenter = port.getCenterPoint();
